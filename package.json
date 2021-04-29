@@ -1,0 +1,23 @@
+{
+  "name": "sea-notes",
+  "version": "1.0.0",
+  "description": "'Sea前端笔记，常用库笔记、以及其他技术分享。'",
+  "main": "index.js",
+  "repository": "git@github.com:Sea-DH1/sea-notes.git",
+  "author": "ldh <627247084@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vuepress dev docs --temp .temp",
+    "build": "vuepress build docs",
+    "build:vercel": "cross-env BUILD_ENV=/ vuepress build docs",
+    "deploy": "gh-pages -d dist -m deploy",
+    "deploy:build": "npm run build && npm run deploy",
+    "lint": "prettier --write **/*.{js,scss,md,json}"
+  },
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.8.2",
+    "@vuepress/plugin-pwa": "^1.8.2",
+    "cross-env": "^7.0.3",
+    "vuepress": "^1.8.2"
+  }
+}
