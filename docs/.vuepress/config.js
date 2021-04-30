@@ -7,7 +7,7 @@ module.exports = {
   description: 'Sea前端笔记，常用库笔记、以及其他技术分享。',
   port: 3001,
   markdown: {
-    lineNumbers: false
+    lineNumbers: false,
   },
   locales: {
     // 键名是该语言所属的子路径
@@ -15,8 +15,8 @@ module.exports = {
     '/': {
       lang: 'zh-CN',
       title: 'Sea-DH1 前端笔记',
-      description: 'Sea-DH1 前端笔记，常用库笔记、以及其他技术分享。'
-    }
+      description: 'Sea-DH1 前端笔记，常用库笔记、以及其他技术分享。',
+    },
   },
   themeConfig: {
     repo: 'https://github.com/Sea-DH1/sea-notes',
@@ -25,16 +25,21 @@ module.exports = {
     nav: [
       {
         text: '音乐播放器',
-        items: [{ text: '移动端', link: 'https://music.nsearh.com' }]
+        items: [{ text: '移动端', link: 'https://music.nsearh.com' }],
       },
-      { text: 'Blog', link: 'https://blog.nsearh.com' }
+      { text: 'Examples', link: 'https://blog.nsearh.com' },
     ],
     sidebar: [
       {
         title: 'Javascript基础',
         collapsable: false, // 可选的, 默认值是 true,
-        children: ['view/', 'view/home']
-      }
-    ]
-  }
+        children: ['view/', 'view/home'],
+      },
+      {
+        title: 'three.js',
+        collapsable: false, // 可选的, 默认值是 true,
+        children: ['three.js/', 'three.js/home'],
+      },
+    ],
+  },
 }
