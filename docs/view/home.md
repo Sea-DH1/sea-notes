@@ -1,4 +1,1 @@
----
-sidebar: auto
----
 # home

@@ -1,7 +1,4 @@
----
-sidebar: auto
----
-# three.js
+# Three.js
 
 ## 什么是web三维
 

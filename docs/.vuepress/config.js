@@ -32,13 +32,13 @@ module.exports = {
     sidebar: [
       {
         title: 'Javascript基础',
-        collapsable: false, // 可选的, 默认值是 true,
+        // collapsable: false, // 可选的, 默认值是 true,
         children: ['view/', 'view/home'],
       },
       {
-        title: 'three.js',
-        collapsable: false, // 可选的, 默认值是 true,
-        children: ['three.js/', 'three.js/home'],
+        title: 'Three.js',
+        // collapsable: false, // 可选的, 默认值是 true,
+        children: ['Three.js/', 'Three.js/home'],
       },
     ],
   },

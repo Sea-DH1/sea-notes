@@ -21,6 +21,14 @@ export const routes = [
     redirect: "/"
   },
   {
+    name: "v-23bc3f32",
+    path: "/Three.js/home.html",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-23bc3f32").then(next)
+    },
+  },
+  {
     name: "v-11d2e938",
     path: "/view/",
     component: GlobalLayout,
@@ -31,6 +39,18 @@ export const routes = [
   {
     path: "/view/index.html",
     redirect: "/view/"
+  },
+  {
+    name: "v-104af264",
+    path: "/Three.js/",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-104af264").then(next)
+    },
+  },
+  {
+    path: "/Three.js/index.html",
+    redirect: "/Three.js/"
   },
   {
     name: "v-1f840632",

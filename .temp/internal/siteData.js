@@ -36,10 +36,16 @@ export const siteData = {
       "lastUpdated": "2021/4/30 上午1:56:32"
     },
     {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-23bc3f32",
+      "path": "/Three.js/home.html"
+    },
+    {
       "title": "前端基础",
-      "frontmatter": {
-        "sidebar": "auto"
-      },
+      "frontmatter": {},
       "regularPath": "/view/",
       "relativePath": "view/README.md",
       "key": "v-11d2e938",
@@ -131,13 +137,31 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/4/30 下午7:34:50"
+      "lastUpdated": "2021/5/1 上午5:50:01"
+    },
+    {
+      "title": "Three.js",
+      "frontmatter": {},
+      "regularPath": "/Three.js/",
+      "relativePath": "Three.js/README.md",
+      "key": "v-104af264",
+      "path": "/Three.js/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "什么是web三维",
+          "slug": "什么是web三维"
+        },
+        {
+          "level": 2,
+          "title": "基本组成",
+          "slug": "基本组成"
+        }
+      ]
     },
     {
       "title": "home",
-      "frontmatter": {
-        "sidebar": "auto"
-      },
+      "frontmatter": {},
       "regularPath": "/view/home.html",
       "relativePath": "view/home.md",
       "key": "v-1f840632",
@@ -167,10 +191,16 @@ export const siteData = {
     "sidebar": [
       {
         "title": "Javascript基础",
-        "collapsable": false,
         "children": [
           "view/",
           "view/home"
+        ]
+      },
+      {
+        "title": "Three.js",
+        "children": [
+          "Three.js/",
+          "Three.js/home"
         ]
       }
     ]
