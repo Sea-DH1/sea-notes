@@ -31,31 +31,46 @@ export const siteData = {
       },
       "regularPath": "/",
       "relativePath": "README.md",
-      "key": "v-7cf31b21",
-      "path": "/"
+      "key": "v-3b60cb0b",
+      "path": "/",
+      "lastUpdated": "2021/4/30 上午1:56:32"
     },
     {
-      "title": "前端面试之道",
+      "title": "前端基础",
       "frontmatter": {
         "sidebar": "auto"
       },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
-      "key": "v-11d2e938",
+      "key": "v-19dcde9b",
       "path": "/view/",
       "headers": [
         {
           "level": 2,
-          "title": "JavaScript基础知识面试题",
-          "slug": "javascript基础知识面试题"
+          "title": "JavaScript基础知识",
+          "slug": "javascript基础知识"
         }
-      ]
+      ],
+      "lastUpdated": "2021/4/30 上午1:56:32"
+    },
+    {
+      "title": "home",
+      "frontmatter": {
+        "sidebar": "auto"
+      },
+      "regularPath": "/view/home.html",
+      "relativePath": "view/home.md",
+      "key": "v-d4b62460",
+      "path": "/view/home.html"
     }
   ],
   "themeConfig": {
+    "repo": "https://github.com/Sea-DH1/sea-notes",
+    "repoLabel": "Github",
+    "lastUpdated": "最后更新时间",
     "nav": [
       {
-        "text": "在线音乐播放器",
+        "text": "音乐播放器",
         "items": [
           {
             "text": "移动端",
@@ -68,7 +83,16 @@ export const siteData = {
         "link": "https://blog.nsearh.com"
       }
     ],
-    "sidebar": "auto"
+    "sidebar": [
+      {
+        "title": "Javascript基础",
+        "collapsable": false,
+        "children": [
+          "view/",
+          "view/home"
+        ]
+      }
+    ]
   },
   "locales": {
     "/": {

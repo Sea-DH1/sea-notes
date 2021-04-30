@@ -4,16 +4,16 @@
 
 import { injectComponentOption, ensureAsyncComponentsLoaded } from '@app/util'
 import rootMixins from '@internal/root-mixins'
-import GlobalLayout from "D:\\myProject\\sea-notes\\node_modules\\@vuepress\\core\\lib\\client\\components\\GlobalLayout.vue"
+import GlobalLayout from "/Volumes/MacDocument/myProjects/sea-notes/node_modules/@vuepress/core/lib/client/components/GlobalLayout.vue"
 
 injectComponentOption(GlobalLayout, 'mixins', rootMixins)
 export const routes = [
   {
-    name: "v-7cf31b21",
+    name: "v-3b60cb0b",
     path: "/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-7cf31b21").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-3b60cb0b").then(next)
     },
   },
   {
@@ -21,16 +21,24 @@ export const routes = [
     redirect: "/"
   },
   {
-    name: "v-11d2e938",
+    name: "v-19dcde9b",
     path: "/view/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-11d2e938").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-19dcde9b").then(next)
     },
   },
   {
     path: "/view/index.html",
     redirect: "/view/"
+  },
+  {
+    name: "v-d4b62460",
+    path: "/view/home.html",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
+    },
   },
   {
     path: '*',

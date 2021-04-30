@@ -1,6 +1,6 @@
 ---
 sidebar: auto
 ---
-# 前端面试之道
+# 前端基础
 
-## JavaScript基础知识面试题
+## JavaScript基础知识
