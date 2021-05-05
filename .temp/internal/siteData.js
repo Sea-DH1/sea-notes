@@ -36,6 +36,61 @@ export const siteData = {
       "lastUpdated": "2021/4/30 上午1:56:32"
     },
     {
+      "title": "Three.js",
+      "frontmatter": {},
+      "regularPath": "/Three.js/",
+      "relativePath": "Three.js/README.md",
+      "key": "v-104af264",
+      "path": "/Three.js/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "什么是web三维",
+          "slug": "什么是web三维"
+        },
+        {
+          "level": 2,
+          "title": "基本组成",
+          "slug": "基本组成"
+        }
+      ]
+    },
+    {
+      "title": "JavaScript数据结构与算法",
+      "frontmatter": {},
+      "regularPath": "/algorithm/",
+      "relativePath": "algorithm/README.md",
+      "key": "v-61d8b18e",
+      "path": "/algorithm/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "栈",
+          "slug": "栈"
+        },
+        {
+          "level": 3,
+          "title": "1、什么是栈？",
+          "slug": "_1、什么是栈"
+        },
+        {
+          "level": 3,
+          "title": "2、函数调用堆栈",
+          "slug": "_2、函数调用堆栈"
+        },
+        {
+          "level": 2,
+          "title": "队列",
+          "slug": "队列"
+        },
+        {
+          "level": 3,
+          "title": "1、队列是什么？",
+          "slug": "_1、队列是什么"
+        }
+      ]
+    },
+    {
       "title": "WebGL",
       "frontmatter": {},
       "regularPath": "/Three.js/home.html",
@@ -137,27 +192,7 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/1 上午5:50:01"
-    },
-    {
-      "title": "Three.js",
-      "frontmatter": {},
-      "regularPath": "/Three.js/",
-      "relativePath": "Three.js/README.md",
-      "key": "v-104af264",
-      "path": "/Three.js/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "什么是web三维",
-          "slug": "什么是web三维"
-        },
-        {
-          "level": 2,
-          "title": "基本组成",
-          "slug": "基本组成"
-        }
-      ]
+      "lastUpdated": "2021/5/1 上午6:01:40"
     },
     {
       "title": "home",
@@ -166,7 +201,7 @@ export const siteData = {
       "relativePath": "view/home.md",
       "key": "v-1f840632",
       "path": "/view/home.html",
-      "lastUpdated": "2021/4/30 下午7:34:50"
+      "lastUpdated": "2021/5/1 上午6:01:40"
     }
   ],
   "themeConfig": {
@@ -201,6 +236,13 @@ export const siteData = {
         "children": [
           "Three.js/",
           "Three.js/home"
+        ]
+      },
+      {
+        "title": "数据结构与算法",
+        "collapsable": false,
+        "children": [
+          "algorithm/"
         ]
       }
     ]

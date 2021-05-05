@@ -40,6 +40,11 @@ module.exports = {
         // collapsable: false, // 可选的, 默认值是 true,
         children: ['Three.js/', 'Three.js/home'],
       },
+      {
+        title: '数据结构与算法',
+        collapsable: false, // 可选的, 默认值是 true,
+        children: ['algorithm/'],
+      },
     ],
   },
 }

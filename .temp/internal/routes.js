@@ -21,6 +21,30 @@ export const routes = [
     redirect: "/"
   },
   {
+    name: "v-104af264",
+    path: "/Three.js/",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-104af264").then(next)
+    },
+  },
+  {
+    path: "/Three.js/index.html",
+    redirect: "/Three.js/"
+  },
+  {
+    name: "v-61d8b18e",
+    path: "/algorithm/",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-61d8b18e").then(next)
+    },
+  },
+  {
+    path: "/algorithm/index.html",
+    redirect: "/algorithm/"
+  },
+  {
     name: "v-23bc3f32",
     path: "/Three.js/home.html",
     component: GlobalLayout,
@@ -39,18 +63,6 @@ export const routes = [
   {
     path: "/view/index.html",
     redirect: "/view/"
-  },
-  {
-    name: "v-104af264",
-    path: "/Three.js/",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-104af264").then(next)
-    },
-  },
-  {
-    path: "/Three.js/index.html",
-    redirect: "/Three.js/"
   },
   {
     name: "v-1f840632",
