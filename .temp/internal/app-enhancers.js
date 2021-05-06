@@ -1,8 +1,8 @@
-import m0 from "D:\\myProject\\sea-notes\\.temp\\app-enhancers\\0.js"
-import m1 from "D:\\myProject\\sea-notes\\.temp\\app-enhancers\\1.js"
-import m2 from "D:\\myProject\\sea-notes\\.temp\\app-enhancers\\data-block.js"
-import m3 from "D:\\myProject\\sea-notes\\.temp\\app-enhancers\\global-components-2.js"
-import m4 from "D:\\myProject\\sea-notes\\.temp\\app-enhancers\\2.js"
+import m0 from "/Volumes/MacDocument/myProjects/sea-notes/.temp/app-enhancers/0.js"
+import m1 from "/Volumes/MacDocument/myProjects/sea-notes/.temp/app-enhancers/1.js"
+import m2 from "/Volumes/MacDocument/myProjects/sea-notes/.temp/app-enhancers/data-block.js"
+import m3 from "/Volumes/MacDocument/myProjects/sea-notes/.temp/app-enhancers/global-components-1.js"
+import m4 from "/Volumes/MacDocument/myProjects/sea-notes/.temp/app-enhancers/2.js"
 
 export default [
   m0,

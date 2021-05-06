@@ -1,3 +1,7 @@
+---
+sidebar: auto
+---
+
 # JavaScript数据结构与算法
 
 ## 栈
@@ -46,3 +50,4 @@ console.log(2);
 2. 可以用如下图表示
 
 ![事件循环与任务队列](../images/algorithm/event-loop.png)
+

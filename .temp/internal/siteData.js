@@ -4,8 +4,16 @@
 export const siteData = {
   "title": "Sea-DH1 Notes",
   "description": "Sea前端笔记，常用库笔记、以及其他技术分享。",
-  "base": "/sea-notes/",
-  "headTags": [],
+  "base": "/",
+  "headTags": [
+    [
+      "link",
+      {
+        "rel": "icon",
+        "href": "/favicon.ico"
+      }
+    ]
+  ],
   "pages": [
     {
       "title": "Home",
@@ -16,31 +24,22 @@ export const siteData = {
         "tagline": "LeeDH笔记",
         "actionText": "开始 →",
         "actionLink": "/view/",
-        "features": [
-          {
-            "title": "前端技术"
-          },
-          {
-            "title": "Vue / React"
-          },
-          {
-            "title": "three.js"
-          }
-        ],
         "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
       },
       "regularPath": "/",
       "relativePath": "README.md",
-      "key": "v-7cf31b21",
+      "key": "v-3b60cb0b",
       "path": "/",
       "lastUpdated": "2021/4/30 上午1:56:32"
     },
     {
       "title": "Three.js",
-      "frontmatter": {},
+      "frontmatter": {
+        "sidebar": "auto"
+      },
       "regularPath": "/Three.js/",
       "relativePath": "Three.js/README.md",
-      "key": "v-104af264",
+      "key": "v-a6d4e5ca",
       "path": "/Three.js/",
       "headers": [
         {
@@ -60,15 +59,61 @@ export const siteData = {
       "frontmatter": {},
       "regularPath": "/Three.js/home.html",
       "relativePath": "Three.js/home.md",
-      "key": "v-23bc3f32",
+      "key": "v-fce5cc60",
       "path": "/Three.js/home.html"
     },
     {
+      "title": "JavaScript数据结构与算法",
+      "frontmatter": {
+        "sidebar": "auto"
+      },
+      "regularPath": "/algorithm/",
+      "relativePath": "algorithm/README.md",
+      "key": "v-f6f3be6a",
+      "path": "/algorithm/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "栈",
+          "slug": "栈"
+        },
+        {
+          "level": 3,
+          "title": "1、什么是栈？",
+          "slug": "_1、什么是栈"
+        },
+        {
+          "level": 3,
+          "title": "2、函数调用堆栈",
+          "slug": "_2、函数调用堆栈"
+        },
+        {
+          "level": 2,
+          "title": "队列",
+          "slug": "队列"
+        },
+        {
+          "level": 3,
+          "title": "1、队列是什么？",
+          "slug": "_1、队列是什么"
+        },
+        {
+          "level": 3,
+          "title": "2、异步队列",
+          "slug": "_2、异步队列"
+        }
+      ],
+      "lastUpdated": "2021/5/6 上午6:14:21"
+    },
+    {
       "title": "前端基础",
-      "frontmatter": {},
+      "frontmatter": {
+        "sidebar": "auto",
+        "sidebarDepth": 2
+      },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
-      "key": "v-11d2e938",
+      "key": "v-19dcde9b",
       "path": "/view/",
       "headers": [
         {
@@ -160,52 +205,11 @@ export const siteData = {
       "lastUpdated": "2021/5/1 上午6:01:40"
     },
     {
-      "title": "JavaScript数据结构与算法",
-      "frontmatter": {},
-      "regularPath": "/algorithm/",
-      "relativePath": "algorithm/README.md",
-      "key": "v-61d8b18e",
-      "path": "/algorithm/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "栈",
-          "slug": "栈"
-        },
-        {
-          "level": 3,
-          "title": "1、什么是栈？",
-          "slug": "_1、什么是栈"
-        },
-        {
-          "level": 3,
-          "title": "2、函数调用堆栈",
-          "slug": "_2、函数调用堆栈"
-        },
-        {
-          "level": 2,
-          "title": "队列",
-          "slug": "队列"
-        },
-        {
-          "level": 3,
-          "title": "1、队列是什么？",
-          "slug": "_1、队列是什么"
-        },
-        {
-          "level": 3,
-          "title": "2、异步队列",
-          "slug": "_2、异步队列"
-        }
-      ],
-      "lastUpdated": "2021/5/5 下午11:46:58"
-    },
-    {
       "title": "home",
       "frontmatter": {},
       "regularPath": "/view/home.html",
       "relativePath": "view/home.md",
-      "key": "v-1f840632",
+      "key": "v-d4b62460",
       "path": "/view/home.html",
       "lastUpdated": "2021/5/1 上午6:01:40"
     }
@@ -216,13 +220,20 @@ export const siteData = {
     "lastUpdated": "最后更新时间",
     "nav": [
       {
+        "text": "Javascript基础",
+        "link": "/view/"
+      },
+      {
+        "text": "Three.js",
+        "link": "/Three.js/"
+      },
+      {
+        "text": "数据结构与算法",
+        "link": "/algorithm/"
+      },
+      {
         "text": "音乐播放器",
-        "items": [
-          {
-            "text": "移动端",
-            "link": "https://music.nsearh.com"
-          }
-        ]
+        "link": "https://music.nsearh.com"
       },
       {
         "text": "Examples",
@@ -240,13 +251,11 @@ export const siteData = {
       {
         "title": "Three.js",
         "children": [
-          "Three.js/",
-          "Three.js/home"
+          "Three.js/"
         ]
       },
       {
         "title": "数据结构与算法",
-        "collapsable": false,
         "children": [
           "algorithm/"
         ]
