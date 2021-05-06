@@ -174,11 +174,196 @@ person.constructor === Person.prototype.constructor
 最后是关于继承，前面讲到“每一个对象都会从原型“继承”属性”，实际上，继承是一个十分具有迷惑的说法，引用《你不知道的JavaScript》中的话，就是：  
 继承意味着复制操作，然而`JavaScript`默认并不会复制对象的属性，相反，`JavaScript`只是在两个对象之间创建一个关联，这样，一个对象就可以通过委托访问另一个对象的属性和函数，所以与其叫继承，委托的说法反而更准确些。
 
-
-
-
-
 ### 继承
+
+记录JavaScript各种继承方式和优缺点。
+
+#### 1、原型链继承  
+```js
+function Parent() {
+  this.name = 'xiaoming';
+}
+
+Parent.prototype.getName = function() {
+  console.log(this.name);
+}
+
+function Child() {
+
+}
+
+Child.prototype = new Parent();
+
+var child1 = new Child();
+
+console.log(child1.getName()); // xiaoming
+```
+
+问题:  
+1、引用类型的属性被所有实例共享，举个例子：  
+```js
+function Parent() {
+  this.names = ['xiaoming', 'xiaohong'];
+}
+
+function Child() {
+
+}
+
+Child.prototype = new Parent();
+
+var child1 = new Child();
+child1.names.push('zhangsan');
+
+console.log(child1.names) // ['xiaoming', 'xiaohong', 'zhangsan']
+
+var child2 = new Child()
+
+console.log(child2.names) // ['xiaoming', 'xiaohong', 'zhangsan']
+```
+
+2、在创建`Child`的实例时，不能向`Parent`传参
+
+#### 2、借用构造函数（经典继承）  
+```js
+function Parent() {
+  this.names = ['xiaoming', 'xiaohong'];
+}
+
+function Child() {
+  Parent.call(this);
+}
+
+var child1 = new Child();
+child1.names.push('zhangsan');
+
+console.log(child1.names); // ['xiaoming', 'xiaohong', 'zhangsan']
+
+var child2 = new Child();
+console.log(child2.names); // ['xiaoming', 'xiaohong']
+```  
+优点：  
+1、避免了引用类型的属性被所有实例共享。
+2、可以在`Child`中向`Parent`传参
+
+举个例子：  
+```js
+function Parent(name) {
+  this.name = name;
+}
+
+function Child(name) {
+  Parent.call(this, name);
+}
+
+var child1 = new Child('xiaoming');
+console.log(child1.name); // xiaoming
+
+var child2 = new Child('xiaohong')
+console.log(child2.name); // xiaohong
+```  
+缺点：  
+方法都在构造函数中定义，每次创建实例都会创建一遍方法。
+
+#### 3、组合继承  
+原型链继承和经典继承双剑合璧  
+```js
+function Parent(name) {
+  this.name = name;
+  this.colors = ['res', 'blue', 'green'];
+}
+
+Parent.prototype.getName = function() {
+  console.log(this.name);
+}
+
+function Child(name, age) {
+  Parent.call(this, name);
+  
+  this.age = age;
+}
+
+Child.prototype = new Parent();
+Child.prototype.constructor = Child;
+
+var child1 = new Child('xiaoming', 18);
+child1.colors.push('black');
+
+console.log(child1.name); // xiaoming
+console.log(child1.age); // 18
+console.log(child1.colors); // ['red', 'blue', 'green', 'black']
+
+var child2 = new Child('xiaohong', 20)
+
+console.log(child2.name); // xiaohong
+console.log(child2.age); // 20
+console.log(child2.colors); // ['red', 'blue', 'green']
+```  
+优点：融合原型链继承和构造函数的优点，是JavaScript中最常用的继承模式。
+
+#### 4、原型式继承  
+```js
+function createObj(o) {
+  function F() {}
+  F.prototype = 0;
+  return new F();
+}
+```  
+就是`ES5 Object.create`的模拟实现，将传入的对象作为创建的对象的原型。  
+缺点：  
+包含引用类型的属性始终都会共享相应的值，这点跟原型链继承一样。  
+```js
+var person = {
+  name: 'xiaoming',
+  firends: ['xiaohong', 'zhangsan']
+}
+
+var person1 = createObj(person);
+var person2 = createObj(person);
+
+person1.name = 'person1'
+console.log(person2.name); // xiaoming
+
+person1.firends.push('lisi');
+console.log(person2.friends); // ['xiaohong', 'zhangsan', 'lisi']
+```  
+注意：修改`person1.name`的值，`person2.name`的值并未发生改变，并不是因为`person1`和`person2`有独立的`name`值，而是因为`persion1.name = 'persion1'`，给`persion1`添加了`name`值，并非修改了原型上的`name`值。
+
+#### 5、寄生式继承  
+创建一个仅用于封装继承过程的函数，该函数在内部以某种形式来做增强对象，最后返回对象。  
+```js
+function createObj(o) {
+  var clone = Object.create(o);
+  clone.sayName = function () {
+    console.log('hi');
+  }
+  return clone
+}
+```  
+缺点：跟借用构造函数模式一样，每次创建对象都会创建一遍方法。
+
+#### 6、寄生组合式继承  
+为了方便阅读，在这里重复一下组合继承的代码：  
+```js
+function Parent(name) {
+  this.name = name;
+  this.colors = ['red', 'blue', 'green'];
+}
+
+Parent.prototype.getName = function() {
+  consloe.log(this.name);
+}
+
+function Child(name, age) {
+  Parent.call(this, name);
+  this.age = age;
+}
+
+Child.prototype = new Parent();
+
+var child1 = new Child('xiaoming', 18);
+console.log(child1)
+```
 
 ### 闭包
 
