@@ -7,6 +7,12 @@ sidebarDepth: 2
 
 ## JavaScript基础知识
 
+### new操作符的原理和实现
+
+### bind的实现
+
+### apply和call
+
 ### 原型、原型链
 
 **例子**：
@@ -305,7 +311,7 @@ console.log(child2.colors); // ['red', 'blue', 'green']
 ```js
 function createObj(o) {
   function F() {}
-  F.prototype = 0;
+  F.prototype = o;
   return new F();
 }
 ```  
@@ -327,7 +333,9 @@ console.log(person2.name); // xiaoming
 person1.firends.push('lisi');
 console.log(person2.friends); // ['xiaohong', 'zhangsan', 'lisi']
 ```  
+:::warning
 注意：修改`person1.name`的值，`person2.name`的值并未发生改变，并不是因为`person1`和`person2`有独立的`name`值，而是因为`persion1.name = 'persion1'`，给`persion1`添加了`name`值，并非修改了原型上的`name`值。
+:::
 
 #### 5、寄生式继承  
 创建一个仅用于封装继承过程的函数，该函数在内部以某种形式来做增强对象，最后返回对象。  
@@ -363,7 +371,67 @@ Child.prototype = new Parent();
 
 var child1 = new Child('xiaoming', 18);
 console.log(child1)
-```
+```  
+组合继承最大的缺点就是会调用两次父构造函数。  
+一次是设置子类型实例的原型的时候：  
+```js
+Child.prototype = new Parent();
+```  
+一次在创建子类型实例的时候：  
+```js
+var child1 = new Child('xiaoming', 18);
+```  
+回想下`new`的模拟实现，其实在这句中，会执行：  
+```js
+Parent.call(this, name);
+```  
+在这里，又会调用了一次`Parent`构造函数。  
+所以，在这个例子中，如果是打印`child1`对象，会发现`Child.prototype`和`child1`都有一个属性为`colors`，属性值为`['red', 'blue', 'green']`。  
+那么该如何精益求精，避免这一次重复调用呢？  
+如果不使用`Child.prototype = new Parent()`，而是间接的让`Child.prototype`访问到`Parent.prototype`呢？  
+
+看看如何实现：  
+```js
+function Parent(name) {
+  this.name = name;
+  this.colors = ['red', 'blue', 'green'];
+}
+
+Parent.prototype.getName = function () {
+  console.log(this.name)
+}
+
+function Child(name, age) {
+  Parent.call(this, name);
+  this.age = age;
+}
+
+// 关键的三步
+var F = function () {};
+F.prototype = Parent.prototype;
+Child.prototype = new F();
+
+var child1 = new Child('xiaoming', 18);
+console.log(child1);
+```  
+最后封装一下这个继承方法：  
+```js
+function object(o) {
+  function f() {};
+  f.prototype = o;
+  return new F();
+}
+
+function prototype(child, parent) {
+  var prototype = object(parent.prototype);
+  prototype.constructor = child;
+  child.prototype = prototype;
+}
+
+prototype(Child, Parent);
+```  
+引用《JavaScript高级程序设计》中对寄生组合工继承的夸赞就是：  
+这种方式的高效率体现它只调用了一次`Parent`构造函数，并且因此避免了在`Parent.prototype`上而创建不必要的、多余的属性。与些同时，原型链还能保持不变；因此，还能够正常使用`instanceof`和`isPrototypeOf`。开发人员普遍认为寄生组合式继承是引用类型最理想的继承范式。
 
 ### 闭包
 
@@ -374,10 +442,6 @@ console.log(child1)
 ### 立即执行函数
 
 ### instanceof原理
-
-### bind的实现
-
-### apply和call
 
 ### 柯里化
 

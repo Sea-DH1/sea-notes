@@ -123,6 +123,21 @@ export const siteData = {
         },
         {
           "level": 3,
+          "title": "new操作符的原理和实现",
+          "slug": "new操作符的原理和实现"
+        },
+        {
+          "level": 3,
+          "title": "bind的实现",
+          "slug": "bind的实现"
+        },
+        {
+          "level": 3,
+          "title": "apply和call",
+          "slug": "apply和call"
+        },
+        {
+          "level": 3,
           "title": "原型、原型链",
           "slug": "原型、原型链"
         },
@@ -155,16 +170,6 @@ export const siteData = {
           "level": 3,
           "title": "instanceof原理",
           "slug": "instanceof原理"
-        },
-        {
-          "level": 3,
-          "title": "bind的实现",
-          "slug": "bind的实现"
-        },
-        {
-          "level": 3,
-          "title": "apply和call",
-          "slug": "apply和call"
         },
         {
           "level": 3,
@@ -202,7 +207,7 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/6 下午5:45:33"
+      "lastUpdated": "2021/5/6 下午6:52:06"
     },
     {
       "title": "home",
