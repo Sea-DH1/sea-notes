@@ -7,11 +7,285 @@ sidebarDepth: 2
 
 ## JavaScript基础知识
 
-### new操作符的原理和实现
+### bind的实现  
+#### bind是什么？  
+一句话介绍bind:  
+> `bind()`方法会创建一个新函数。当这个新函数被调用时，bind()的第一个参数将作为它运行平时的this，之后的序列参数将会在传递的实参前传入作为它的参数，供调用时使用。（来自于[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)）  
+由此可以首先得出`bind`函数的两个特点：  
+1、返回一个函数  
+2、可以传入参数
 
-### bind的实现
+#### 返回函数的模拟实现  
+从第一个特点开始，举个例子：  
+```js
+var foo = {
+  value: 1
+};
+
+function bar() {
+  console.log(this.value);
+}
+
+// 返回了一个函数
+var bindFoo = bar.bind(foo);
+
+bindFoo(); // 1
+```
+
+关于指定`this`的指向，可以使用`call`或者`apply`实现。  
+第一版代码：  
+```js
+Function.prototype.bind2 = function(context) {
+  var self = this;
+  return function() {
+    return self.apply(context);
+  }
+}
+```  
+此外，之所以`return self.apply(context)`，是考虑到绑定函数可能是有返回值的，依然是这个例子：  
+```js
+var foo = {
+  value: 1
+};
+
+function bar() {
+  return this.value;
+}
+
+var bindFoo = bar.bind(foo);
+
+console.log(bindFoo()); // 1
+```
+
+#### 传参的模拟实现  
+接下来看第二点，可以传入参数。这个就有点让人费解了，我在`bind`的时候，是否可以传参呢？我在执行`bind`返回的函数的时候，可不可以传参呢？接下来看个例子：  
+```js
+var foo = {
+  value: 1
+};
+
+function bar(name, age) {
+  console.log(this.value);
+  console.log(name);
+  console.log(age);
+}
+
+var bindFoo = bar.bind(foo, 'xiaoming');
+bindFoo(18);
+// 1
+// xiaoming
+// 18
+```
+
+函数需要传`name`和`age`两个参数，竟然还可以在`bind`的时候，只传一个`name`，在执行返回的函数的时候，再传另一个参数`age!`这可咋办？不急，可以用`arguments`进行处理：  
+```js
+// 第二版
+Function.prototype.bind2 = function () {
+  var self = this;
+  // 获取bind2函数从第二个参数到最后一个参数
+  var args = Array.prototype.slice.call(arguments, 1);
+
+  return function () {
+    // 这个时候的arguments是指bind返回的函数传入的参数
+    var bindArgs = Array.prototype.slice.call(arguments);
+    return self.apply(context, args.concat(bindArgs));
+  }
+}
+```
+
+#### 构造函数效果的模拟实现  
+完成了这两点，最难的部分到了！因为`bind`还有一个特点，就是：  
+> 一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的this值被忽略，同时调用时的参数被提供给模拟函数。
+
+也就是说当`bind`返回的函数作为构造函数的时候，`bind`时指定的`this`值会失效，但传入的参数依然生效。举个例子：  
+```js
+var value = 2;
+
+var foo = {
+  value: 1
+};
+
+function bar(name, age) {
+  this.habit = 'shopping';
+  console.log(this.value);
+  console.log(name);
+  console.log(age);
+}
+
+bar.prototype.friend = 'xiaoming';
+
+var bindFoo = bar.bind(foo, 'xiaohong')；
+
+var obj = new bindFoo(18);
+// undefined
+// xiaohong
+// 18
+console.log(obj.habit);n
+console.log(obj.friend);
+// shopping
+// xiaoming
+```
+
+::: warning
+注意：尽管在全局和foo中都声明了value值，最后依然返回了undefined，说明绑定的this失效了，如果了解new的模拟实现，就会知道这个时候的this已经指向了obj。
+:::
+
+所以可以通过修改返回的函数的原型来实现：  
+```js
+// 第三版
+Function.prototype.bind2 = function(context) {
+  var self = this;
+  var args = Array.prototype.slice.call(arguments, 1);
+
+  var fBound = function() {
+    var bindArgs = Array.prototype.slice.call(arguments);
+    // 当作为函数时，this指向实例，此时结果为true，将绑定函数的this指向该实例，可以让实例获得来自绑定函数的值。
+    // 以上的都是demo为例，如果改成 `this instanceof fBound ? null : context`，实例只是一个空对象，将null改成this, 实例会具有habit属性
+    // 当作为普通函数时，this指向window，此时结果为false，将绑定函数的this指向context
+    return self.apply(this.instanceof fBound ? this : context, args.concat(bindArgs));
+  }
+  // 修改返回函数的prototype为绑定函数的prototype，实例就可以继承绑定函数的原型中的值
+  fBound.prototype = this.prototype;
+  return fBound;
+}
+```
+
+#### 构造函数效果的优化实现  
+但是在这个写法中，直接将`fBound.prototype = this.prototype`，可以直接修改`fBound.prototype`的时候，也会直接修改绑定函数的`prototype`。这个时候，可以通过一个空函数来进行中转：  
+```js
+// 第四版
+Function.prototype.bind2 = function(context) {
+  var self = this;
+  var args = Array.prototype.slice.call(arguments, 1);
+
+  var fNOP = function () {};
+
+  var fBound = function () {
+    var bindArgs = Array.prototype.slice.call(arguments);
+    return self.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
+  }
+
+  fNOP.prototype = this.prototype;
+  fBound.prototype = new fNOP();
+  return fBound;
+}
+```
+
+#### 两个小问题  
+接下来处理些小问题  
+##### 1、调用bind的不是函数怎么办？  
+要给出报错：  
+```js
+if (typeof this != "function") {
+  throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+}
+```  
+##### 2、在线上使用  
+别忘了做个兼容  
+```js
+Function.prototype.bind = Function.prototype.bind || function () {
+  .....
+}
+```  
+
+#### 最终代码  
+```js
+Function.prototype.bind2 = function(context) {
+  if (typeof this !== "function") {
+    throw new Error("Function.prototype.bind - what is trying to be bound is not callable")；
+  }
+
+  var self = this;
+  var args = Array.prototype.slice.call(arguments, 1);
+
+  var fNOP = function() {};
+
+  var fBound = function () {
+    var bindArgs = Array.prototype.slice.call(arguments);
+    return self.apply(this. instanceof fNOP ? this : context, args.concat(bindArgs));
+  }
+
+  fNOP.prototype = this.prototype;
+  fBound.prototype = new fNOP();
+  return fBound;
+}
+```
+***
+
+### new操作符的原理和实现  
+#### new是什么？  
+一句话介绍new：  
+> new 运算符创建一个用户定义的对象类型的实例或具有构造函数的内置对象类型之一  
+也许有点难懂，在模拟`new`之前，先看看`new`实现了哪些功能。
+
+举个例子：  
+```js
+// Otaku 
+function Otaku(name, age) {
+  this.name = name;
+  this.age = age;
+
+  this.habit = 'Games';
+}
+
+Otaku.prototype.strength = 60;
+Otaku.prototype.sayYourName = function () {
+  console.log('I am' + this.name);
+}
+
+var person = new Otaku('xiaoming', 18);
+
+console.log(person.name) // xiaoming
+console.log(person.habit) // 'Games'
+console.log(person.strength) // 60
+
+person.sayYourName(); // I am xiaoming
+```  
+从这个例子中，可以看到，实例`person`可以：  
+1、访问到`Otaku`构造函数里的属性  
+2、访问到`Otaku.prototype`中的属性
+
+接下来，可以尝试着模拟一下了。
+
+因为`new`是关键字，所以无法像bind函数一样直接覆盖，所以写一个函数，命名为`objectFactory`，来模拟`new`的效果。用的时候是这样的：  
+```js
+function Otaku() {
+  .....
+}
+
+// 使用 new
+var person = new Otaku(.....);
+var person = objectFactory(Otaku, .....);
+```
+
+#### 初步实现  
+分析：  
+因为`new`的结果是一个新对象，所以在模拟实现的时候，也要建立一个新对象，假设这个对象叫`obj`，因为`obj`会具有`Otaku`构造函数里面的属性，想想经典继承的例子，可以使用`Otaku.apply(obj, arguments)`来给`obj`添加新的属性。
+
+现在，我们可以尝试着写第一版了：  
+```js
+// 第一版代码
+function objectFactory() {
+  var obj = new Object(),
+  Constructor = [].shift.call(arguments);
+
+  obj.__proto__ = Constrcutor.prototype;
+  Constructor.apply(obj, arguments);
+
+  return obj;
+};
+```  
+在这一版中，我们：  
+1、用`new Object()`的方式新建了一个对象`obj`  
+2、取出第一个参数，就是我们要传入的构造函数。此外因为`shift`会修改原数组，所以`arguments`会被去除第一个参数  
+3、将`obj`的原型指向构造函数，这样`obj`就可以用访问到构造函数原型中的属性  
+4、使用`apply`，改变构造函数`this`的指向到新建的对象，这样`obj`就可以访问到构造函数的属性  
+5、返回`obj`
+***
 
 ### apply和call
+
+***
 
 ### 原型、原型链
 
@@ -179,6 +453,8 @@ person.constructor === Person.prototype.constructor
 #### 真的是继承吗？  
 最后是关于继承，前面讲到“每一个对象都会从原型“继承”属性”，实际上，继承是一个十分具有迷惑的说法，引用《你不知道的JavaScript》中的话，就是：  
 继承意味着复制操作，然而`JavaScript`默认并不会复制对象的属性，相反，`JavaScript`只是在两个对象之间创建一个关联，这样，一个对象就可以通过委托访问另一个对象的属性和函数，所以与其叫继承，委托的说法反而更准确些。
+
+***
 
 ### 继承
 
@@ -432,6 +708,8 @@ prototype(Child, Parent);
 ```  
 引用《JavaScript高级程序设计》中对寄生组合工继承的夸赞就是：  
 这种方式的高效率体现它只调用了一次`Parent`构造函数，并且因此避免了在`Parent.prototype`上而创建不必要的、多余的属性。与些同时，原型链还能保持不变；因此，还能够正常使用`instanceof`和`isPrototypeOf`。开发人员普遍认为寄生组合式继承是引用类型最理想的继承范式。
+
+***
 
 ### 闭包
 
