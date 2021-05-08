@@ -3,19 +3,18 @@ sidebar: auto
 sidebarDepth: 2
 ---
 
-# 前端基础
+# JavaScript基础知识
 
-## JavaScript基础知识
-
-### bind的实现  
-#### bind是什么？  
+<!-- bind的实现 -->
+## bind的实现  
+### bind是什么？  
 一句话介绍bind:  
 > `bind()`方法会创建一个新函数。当这个新函数被调用时，bind()的第一个参数将作为它运行平时的this，之后的序列参数将会在传递的实参前传入作为它的参数，供调用时使用。（来自于[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)）  
 由此可以首先得出`bind`函数的两个特点：  
 1、返回一个函数  
 2、可以传入参数
 
-#### 返回函数的模拟实现  
+### 返回函数的模拟实现  
 从第一个特点开始，举个例子：  
 ```js
 var foo = {
@@ -32,9 +31,9 @@ var bindFoo = bar.bind(foo);
 bindFoo(); // 1
 ```
 
-关于指定`this`的指向，可以使用`call`或者`apply`实现。  
-第一版代码：  
+关于指定`this`的指向，可以使用`call`或者`apply`实现。    
 ```js
+// 第一版代码
 Function.prototype.bind2 = function(context) {
   var self = this;
   return function() {
@@ -57,7 +56,7 @@ var bindFoo = bar.bind(foo);
 console.log(bindFoo()); // 1
 ```
 
-#### 传参的模拟实现  
+### 传参的模拟实现  
 接下来看第二点，可以传入参数。这个就有点让人费解了，我在`bind`的时候，是否可以传参呢？我在执行`bind`返回的函数的时候，可不可以传参呢？接下来看个例子：  
 ```js
 var foo = {
@@ -93,7 +92,7 @@ Function.prototype.bind2 = function () {
 }
 ```
 
-#### 构造函数效果的模拟实现  
+### 构造函数效果的模拟实现  
 完成了这两点，最难的部分到了！因为`bind`还有一个特点，就是：  
 > 一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的this值被忽略，同时调用时的参数被提供给模拟函数。
 
@@ -150,7 +149,7 @@ Function.prototype.bind2 = function(context) {
 }
 ```
 
-#### 构造函数效果的优化实现  
+### 构造函数效果的优化实现  
 但是在这个写法中，直接将`fBound.prototype = this.prototype`，可以直接修改`fBound.prototype`的时候，也会直接修改绑定函数的`prototype`。这个时候，可以通过一个空函数来进行中转：  
 ```js
 // 第四版
@@ -171,16 +170,16 @@ Function.prototype.bind2 = function(context) {
 }
 ```
 
-#### 两个小问题  
+### 两个小问题  
 接下来处理些小问题  
-##### 1、调用bind的不是函数怎么办？  
+#### 1、调用bind的不是函数怎么办？  
 要给出报错：  
 ```js
 if (typeof this != "function") {
   throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
 }
 ```  
-##### 2、在线上使用  
+#### 2、在线上使用  
 别忘了做个兼容  
 ```js
 Function.prototype.bind = Function.prototype.bind || function () {
@@ -188,7 +187,7 @@ Function.prototype.bind = Function.prototype.bind || function () {
 }
 ```  
 
-#### 最终代码  
+### 最终代码  
 ```js
 Function.prototype.bind2 = function(context) {
   if (typeof this !== "function") {
@@ -212,8 +211,8 @@ Function.prototype.bind2 = function(context) {
 ```
 ***
 
-### new操作符的原理和实现  
-#### new是什么？  
+## new操作符的原理和实现  
+### new是什么？  
 一句话介绍new：  
 > new 运算符创建一个用户定义的对象类型的实例或具有构造函数的内置对象类型之一  
 也许有点难懂，在模拟`new`之前，先看看`new`实现了哪些功能。
@@ -258,7 +257,7 @@ var person = new Otaku(.....);
 var person = objectFactory(Otaku, .....);
 ```
 
-#### 初步实现  
+### 初步实现  
 分析：  
 因为`new`的结果是一个新对象，所以在模拟实现的时候，也要建立一个新对象，假设这个对象叫`obj`，因为`obj`会具有`Otaku`构造函数里面的属性，想想经典继承的例子，可以使用`Otaku.apply(obj, arguments)`来给`obj`添加新的属性。
 
@@ -281,13 +280,363 @@ function objectFactory() {
 3、将`obj`的原型指向构造函数，这样`obj`就可以用访问到构造函数原型中的属性  
 4、使用`apply`，改变构造函数`this`的指向到新建的对象，这样`obj`就可以访问到构造函数的属性  
 5、返回`obj`
+
+复制以下的代码，到浏览器中，我们可以做一下测试：  
+```js
+function Otaku (name, age) {
+    this.name = name;
+    this.age = age;
+
+    this.habit = 'Games';
+}
+
+Otaku.prototype.strength = 60;
+
+Otaku.prototype.sayYourName = function () {
+    console.log('I am ' + this.name);
+}
+
+function objectFactory() {
+    var obj = new Object(),
+    Constructor = [].shift.call(arguments);
+    obj.__proto__ = Constructor.prototype;
+    Constructor.apply(obj, arguments);
+    return obj;
+};
+
+var person = objectFactory(Otaku, 'xiaoming', '18')
+
+console.log(person.name) // xiaoming
+console.log(person.habit) // Games
+console.log(person.strength) // 60
+
+person.sayYourName(); // I am xiaoming
+```
+
+### 返回值效果实现  
+接下来再来看一种情况，假如构造函数有返回值，举个例子：  
+```js
+function Otaku (name, age) {
+  this.strength = 60;
+  this.age = age;
+
+  return {
+    name: name,
+    habit: 'Games'
+  }
+}
+
+var person = new Otaku('xiaoming', 18);
+
+console.log(person.name) // xiaoming
+console.log(person.habit) // Games
+console.log(person.strength) // undefined
+console.log(person.age) // undefined
+```  
+在这个例子中，构造函数返回了一个对象，在实例`person`中只能访问返回的对象中的属性。
+而且还要注意一点，在这里是返回了一个对象，假如只是返回一个基本类型的值呢？  
+再举个例子：  
+```js
+function Otaku(name, age) {
+  this.strength = 60;
+  this.age = age;
+
+  return 'handsome boy';
+}
+
+var person = new Otaku('xiaoming', 18);
+
+console.log(person.name) // undefined
+console.log(person.habit) // undefined
+console.log(person.strength) // 60
+console.log(person.age) // 18
+```  
+结果完全颠倒过来，这次尽管有返回值，但是相当于没有返回值进行处理。  
+所以我们还需要判断返回的值是不是一个对象，如果是一个对象，就返回这个对象，如果没有，该返回什么就返回什么。  
+再来看第二版的代码，也是最后一版的代码：  
+```js
+// 第二版代码
+function objectFactory() {
+  var obj = new Object(),
+  Constructor = [].shift.call(arguments);
+  obj.__proto__ = Constructor.prototype;
+  var ret = Constructor.apply(obj, arguments);
+  return typeof ret === 'object' ? ret : obj;
+}
+```
+
 ***
 
-### apply和call
+## apply和call  
+### call是什么？
+一句话介绍`call`  
+> call()方法在使用一个指定的this值和若干个指定的参数值的前提下调用某个函数或方法。  
+
+举个例子：  
+```js
+var foo = {
+  value: 1
+};
+
+function bar () {
+  console.log(this.value);
+}
+
+bar.call(foo) // 1
+```  
+注意两点：  
+1、`call`改变了`this`的指向，指向到`foo`  
+2、`bar`函数执行了
+
+### 模拟实现第一步  
+那么该怎么模拟实现这两个效果呢？  
+试想当调用call的时候，把`foo`对象改造成如下：  
+```js
+var foo = {
+  value: 1,
+  bar: function() {
+    console.log(this.value)
+  }
+};
+
+foo.bar(); // 1
+```  
+这个时候`this`就指向了`foo`，是不是很简单呢？  
+但是这样却给`foo`对象本身添加了一个属性，这不符合预期！  
+不过也不用担心，用delete再删除它不就好了~  
+所以模拟的步骤可以分为：  
+1、将函数设为对象的属性  
+2、执行该函数  
+3、删除该函数
+
+以上个例子为例，就是：  
+```js
+// 第一步
+foo.fn = bar
+// 第二步
+foo.fn()
+// 第三步
+delete foo.fn
+```  
+`fn`是对象的属性名，反正最后也要删除它，所以起成什么都无所谓。  
+根据这个思路，可以尝试着去写第一版的`call2`函数：  
+```js
+// 第一版
+Function.prototype.call2 = function(context) {
+  // 首先要获取调用call的函数，用this可以获取
+  context.fn = this;
+  context.fn();
+  delete context.fn;
+}
+
+// 测试一下
+var foo = {
+  value: 1
+}
+
+function bar () {
+  console.log(this.value);
+}
+
+bar.call2(foo); // 1
+```  
+正好可以打印`1`，是不是很开心~  
+
+### 模拟实现第二步  
+从一开始也讲了，`call`函数还能给定参数执行函数。举个例子：  
+```js
+var foo = {
+  value: 1
+};
+
+function bar(name, age) {
+  console.log(name);
+  console.log(age);
+  console.log(this.value);
+}
+
+bar.call(foo, 'xiaoming', 18);
+// xiaoming
+// 18
+// 1
+```  
+::: warning
+注意：传入的参数并不确定，这可咋办？  
+不急，可以从Arguments对象中取值，取出第二个到最后一个参数，然后放到一个数组里。
+:::  
+比如这样：   
+```js
+// 以上个例子为例，此时的arguments为：
+// arguments = {
+//   0: foo,
+//   1: 'xiaoming',
+//   2: 18,
+//   length: 3
+// }
+// 因为arguments是类数组对象，所以可以用for循环
+var args = [];
+for (var i = 1, len = arguments.length; i < len; i++>) {
+  args.push(`arguments[${i}]`);
+}
+
+// 执行后args为【“arguments[1]”, “arguments[2]”, “arguments[3]”】
+```  
+不确定长的参数问题解决了，接着要把这个参数数组放到要执行的函数的参数里面去。  
+```js
+// 将数组里面的元素作为多个参数放进函数的形参里
+context.fn(args.join(','))
+// ??
+// 这个方法肯定是不行的！！
+```  
+也许有人想到用ES6的方法，不过call是ES3的方法，为了模拟实现一个ES3的方法，要用到ES6的方法，这就有点说不过去了。不过....，反正也都是学习，嘻嘻。  
+这次用eval方法拼成一个函数，类似于这样：  
+```js
+eval('context.fn(' + args + ')')
+```  
+这里`args`会自动调用`Array.toString()`这个方法。  
+所以第二版克服了两个大总是，代码如下：  
+```js
+// 第二版
+Function.prototype.call2 = function(context) {
+  context.fn = this;
+  var args = [];
+  for (var i = 1, len = arguments.length; i < len; i++) {
+    args.push(`arguments[${i}]`);
+  }
+  eval('context.fn(' + args + ')');
+  delete context.fn;
+}
+
+// 测试一下
+var foo = {
+  value: 1
+};
+
+function bar(name, age) {
+  console.log(name)
+  console.log(age)
+  console.log(this.value)
+}
+
+bar.call2(foo, 'xiaoming', 18);
+// xiaom
+// 18
+// 1
+```  
+模拟第二步完毕  
+
+### 模拟实现第三步  
+模拟代码已经完成80%，还有两个小点要注意：  
+1、`this`参数可以传`null`，当为`null`的时候，视为指定`window`  
+举个例子：  
+```js
+var value = 1;
+
+function bar() {
+  console.log(this.value);
+}
+
+bar.call(null) // 1
+```  
+虽然这个例子本身不使用call，结果依然一样。  
+2、函数是可以有返回值的！  
+举个例子：  
+```js
+var obj = {
+  value: 1
+}
+
+function bar (name, ages) {
+  return {
+    value: this.value,
+    name: name,
+    age: age
+  }
+}
+
+console.log(bar.call(obj, 'xiaoming', 18));
+// Object {
+//   value: 1,
+//   name: 'xiaoming',
+//   age: 18
+// }
+```  
+不过都很好解决，直接看第三版也是就最后一版的代码：  
+```js
+// 第三版
+Function.prototype.call2 = function (context) {
+  var context = context || window;
+  context.fn = this;
+
+  var args = [];
+  for (var i = 1, len = arguments.length; i < len; i++) {
+    args.push(`arguments[${i}]`);
+  }
+
+  var result = eval('context.fn(' + args + ')');
+
+  delete context.fn;
+  return result;
+}
+
+// 测试一下
+var value = 2;
+
+var obj = {
+  value: 1
+}
+
+function bar (name, age) {
+  console.log(this.value);
+  return {
+    value: this.value,
+    name: name,
+    age: age
+  }
+}
+
+bar.call2(null) // 2
+
+console.log(bar.call2(obj, 'xiaoming', 18));
+// 1
+// Object {
+//   value: 1,
+//   name: 'xiaoming',
+//   age: 18
+// }
+```  
+到此，完成了`call`的模拟实现。
+
+### apply的模拟实现   
+`apply`的实现跟`call`类似，在这里直接给代码：  
+```js
+Function.prototype.apply = function (context, arr) {
+  var context = Object(context) || window;
+  context.fn = this;
+
+  var result;
+  if (!arr) {
+    result = context.fn();
+  } else {
+    var args = []
+    for (var i = 1, len = arguments.length; i < len; i++) {
+      args.push(`arguments[${i}]`);
+    }
+    result = eval('context.fn(' + args + ')')
+  }
+
+  delete context.fn;
+  return result;
+}
+```
 
 ***
 
-### 原型、原型链
+## 原型、原型链
+
+### prototype
+
+每个函数都有一个`prototype`属性，就是我们经常在各种例子中看到的那个`prototype`。  
 
 **例子**：
 
@@ -303,10 +652,6 @@ console.log(person.name); // xiaoming
 在这个例子中，`Person`就是一个构造函数，我们使用了`new`创建了一个实例对象就是`person`。
 
 函数就是一个构造器(可以是`class`类，或者是工厂函数的叫法，`new`出来的，叫实例对象。这块知识以前都是比较模糊的，这里重点记一下笔记。)
-
-#### prototype
-
-每个函数都有一个`prototype`属性，就是我们经常在各种例子中看到的那个`prototype`。
 
 **比如**：
 
@@ -333,7 +678,7 @@ console.log(person2.name) // 'xiaoming'
 
 那么该怎么表示实例与实例原型，也就是`person`与`person.prototype`之间的关系呢，这时候我们就要讲到第二个属性：
 
-#### \_\_proto\_\_
+### \_\_proto\_\_
 
 这是每个`JavaScript`对象(除了null)都具有的一个属性，叫`__proto__`，这个属性会指向该对象的原型。  
 为了证明这一点，可以在火狐或者谷歌中输入：  
@@ -349,7 +694,7 @@ console.log(person.__proto__ === Person.prototype); // true
 
 既然实例对象和构造函数都可以指向原型，那么原型是否有属性指向构造函数或者实例呢？
 
-#### constructor
+### constructor
 指向实例倒是没有，因为一个构造函数可以生成多个实例，但是原型指向函数倒是有的，这就要讲到第三个属性：  
 `constructor`，每个原型都有一个`constructor`属性指向关联的构造函数。
 
@@ -375,7 +720,7 @@ console.log(Object.getPrototypeOf(person === Person.prototype)) // true
 ```  
 了解了构造函数、实例原型和实例之间的关系，接下来讲讲实例和原型的关系
 
-#### 实例与原型
+### 实例与原型
 
 当读取实例的属性时，如果找不到，就会查找与对象关联的原型中的属性，如果还查不到，就去找原型的原型，一直找到最顶层为止。
 
@@ -399,7 +744,7 @@ console.log(person.name) // xiaoming
 
 但是万一还没有找到呢？原型的原型又是什么呢？
 
-#### 原型的原型
+### 原型的原型
 
 在前面，已经讲了原型也是一个对象，既然是对象，就可以用最原始的方式创建它，那就是：  
 ```js
@@ -410,7 +755,7 @@ console.log(obj.name); // xiaoming
 其实原型对象就是通过`Object`构造函数生成的，结合之前所讲的，实例的`__proto__`指向构造函数的`prototype`，所以再更新下关系图：  
 ![原型和原型链关系图4](../images/view/prototype4.png)
 
-#### 原型链
+### 原型链
 
 那`Object.prototype`的原型呢？
 
@@ -456,11 +801,11 @@ person.constructor === Person.prototype.constructor
 
 ***
 
-### 继承
+## 继承
 
 记录JavaScript各种继承方式和优缺点。
 
-#### 1、原型链继承  
+### 1、原型链继承  
 ```js
 function Parent() {
   this.name = 'xiaoming';
@@ -506,7 +851,7 @@ console.log(child2.names) // ['xiaoming', 'xiaohong', 'zhangsan']
 
 2、在创建`Child`的实例时，不能向`Parent`传参
 
-#### 2、借用构造函数（经典继承）  
+### 2、借用构造函数（经典继承）  
 ```js
 function Parent() {
   this.names = ['xiaoming', 'xiaohong'];
@@ -547,7 +892,7 @@ console.log(child2.name); // xiaohong
 缺点：  
 方法都在构造函数中定义，每次创建实例都会创建一遍方法。
 
-#### 3、组合继承  
+### 3、组合继承  
 原型链继承和经典继承双剑合璧  
 ```js
 function Parent(name) {
@@ -583,7 +928,7 @@ console.log(child2.colors); // ['red', 'blue', 'green']
 ```  
 优点：融合原型链继承和构造函数的优点，是JavaScript中最常用的继承模式。
 
-#### 4、原型式继承  
+### 4、原型式继承  
 ```js
 function createObj(o) {
   function F() {}
@@ -613,7 +958,7 @@ console.log(person2.friends); // ['xiaohong', 'zhangsan', 'lisi']
 注意：修改`person1.name`的值，`person2.name`的值并未发生改变，并不是因为`person1`和`person2`有独立的`name`值，而是因为`persion1.name = 'persion1'`，给`persion1`添加了`name`值，并非修改了原型上的`name`值。
 :::
 
-#### 5、寄生式继承  
+### 5、寄生式继承  
 创建一个仅用于封装继承过程的函数，该函数在内部以某种形式来做增强对象，最后返回对象。  
 ```js
 function createObj(o) {
@@ -626,7 +971,7 @@ function createObj(o) {
 ```  
 缺点：跟借用构造函数模式一样，每次创建对象都会创建一遍方法。
 
-#### 6、寄生组合式继承  
+### 6、寄生组合式继承  
 为了方便阅读，在这里重复一下组合继承的代码：  
 ```js
 function Parent(name) {
@@ -711,26 +1056,108 @@ prototype(Child, Parent);
 
 ***
 
-### 闭包
+## 闭包  
+### 定义  
+MDN对闭包的定义：  
+> 闭包是指那些能够访问自由变量的函数。  
+那什么是自由变量呢？  
+> 自由变量是指在函数中使用的，但既不是函数参数也不是函数的局部变量的变量。  
+由此，可以看出闭包共有两部分组成：  
+> 闭包 = 函数 + 函数能够访问的自由变量  
 
-### 变量提升
+举个例子：  
+```js
+var a = 1;
 
-### this的指向
+function foo () {
+  console.log(a);
+}
 
-### 立即执行函数
+foo();
+```  
+`foo`函数可以访问变量`a`，但是`a`既不是foo函数的局部变量，也不是`foo`函数的参数，所以`a`就是自由变量。  
+那么，函数`foo + foo`函数访问的自由变量`a`不就是构成了一个闭包嘛。。。。  
+还真是这样的！！  
+所以在《JavaScript权威指南》中就讲到：从技术的角度讲，所有的JavaScript函数都是闭包。  
+咦，这怎么跟我们平时看到的讲到的闭包不一样呢！？  
+别着急，这是理论上的闭包，其实还有一个实践角度上的闭包：  
+ECMAScript中，闭包指的是：  
+1、从理论角度：所有的函数。因为它们都创建的时候就将上层上下文的数据保存起来了。哪怕是简单的全局变量也是如此，因为函数中访问全局变量就相当于是在访问自由变量，这个时候使用最外层的作用域。  
+2、从实践角度：以下函数才算是闭包：  
+ i: 即使创建它的上下文已经销毁，它仍然存在（比如，内部函数从父函数中返回）  
+ ii: 在代码中引用了自由变量  
 
-### instanceof原理
+接下来就来讲讲实践上的闭包。  
 
-### 柯里化
+### 分析  
+先写个例子，例子依然是来自《JavaScript权威指南》，稍微做点发动：  
+```js
+var scope = "global scope";
 
-### v8垃圾回收机制
+function checkscope() {
+  var scope = "local scope";
+  function f () {
+    return scope;
+  }
+  return f;
+}
 
-### 浮点数精度
+var foo = checkscope();
+foo()
+```  
+首先要分析一下这段代码中执行上下文栈和执行上下文的变化情况。  
 
-### new操作符
+这里直接给出简要的执行过程：  
+:::tip
+1、进入全局代码，创建全局执行上下文，全局执行上下文压入执行上下文栈  
+2、全局执行上下文初始化  
+3、执行`checkscope`函数，创建`checkscope`函数执行上下文，`checkscope`执行上下文被压入执行上下文栈  
+4、`checkscope`执行上下文初始化，创建变量对象、作用域链、`this`等  
+5、`checkscope`函数执行完毕，`checkscope`执行上下文从执行上下文栈中弹出  
+6、执行`f`函数，创建`f`函数执行上下文，`f`执行上下文被压入执行上下文栈  
+7、`f`执行上下文初始化，创建变量对象、作用域链、this等  
+8、`f`函数执行完毕，`f`函数上下文从执行上下文栈中弹出
+:::  
+了解到这个过程，应该思考一个问题，那就是：  
+当`f`函数执行的时候，`checkscope`函数上下文已经被销毁了（即从执行上下文栈中弹出），怎么还会读取到`checkscope`作用域下的`scope`值呢？  
 
-### 事件循环机制
+当了解了具体的执行过程后，知道`f`执行上下文维护了一个作用链：  
+```js
+fContext = {
+  Scope: [AO, checkscopeContext.AO, globalContext.VO]
+}
+```  
+对的，就是因为这个作用域链，`f`函数依然可以读取到`checkscopeContext.AO`的值，说明当`f`函数引用了`checkscopeContext.AO`中的值的时候，即使`checkscopeContext`被销毁了，但是JavaScript依然会让`checkscopeContext.AO`活在内存中，`f`函数依然可以通过`f`函数的作用域链找到它，正是因为JavaScript做到了这一点，从而实现了闭包这个概念。  
 
-### promise原理
+所以，再看一遍实践角度上闭包的定义：  
+1、即使创建它的上下文已经销毁，它仍然存在（比如，内部函数从父函数返回）  
+2、在代码中引用了自由变量  
 
-### generator原理
+在这里再补充一个《JavaScript权威指南》英文原版对闭包的定义：  
+> This combination of a function object and a scope (a set of variable bindings) in which the function's variables are resolved is called a closure in the computer science literature.  
+
+闭包在计算机科学中也只是一个普通的概念，不要去想得太复杂。
+
+***
+
+## 变量提升
+
+## this的指向
+
+## 立即执行函数
+
+## instanceof原理
+
+## 柯里化
+
+## v8垃圾回收机制
+
+## 浮点数精度
+
+## new操作符
+
+## 事件循环机制
+
+## promise原理
+
+## generator原理

@@ -9,18 +9,6 @@ import GlobalLayout from "/Volumes/MacDocument/myProjects/sea-notes/node_modules
 injectComponentOption(GlobalLayout, 'mixins', rootMixins)
 export const routes = [
   {
-    name: "v-a6d4e5ca",
-    path: "/Three.js/",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-a6d4e5ca").then(next)
-    },
-  },
-  {
-    path: "/Three.js/index.html",
-    redirect: "/Three.js/"
-  },
-  {
     name: "v-3b60cb0b",
     path: "/",
     component: GlobalLayout,
@@ -33,23 +21,23 @@ export const routes = [
     redirect: "/"
   },
   {
-    name: "v-19dcde9b",
-    path: "/view/",
+    name: "v-a6d4e5ca",
+    path: "/Three.js/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-19dcde9b").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-a6d4e5ca").then(next)
     },
   },
   {
-    path: "/view/index.html",
-    redirect: "/view/"
+    path: "/Three.js/index.html",
+    redirect: "/Three.js/"
   },
   {
-    name: "v-d4b62460",
-    path: "/view/home.html",
+    name: "v-fce5cc60",
+    path: "/Three.js/home.html",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-fce5cc60").then(next)
     },
   },
   {
@@ -65,12 +53,24 @@ export const routes = [
     redirect: "/algorithm/"
   },
   {
-    name: "v-fce5cc60",
-    path: "/Three.js/home.html",
+    name: "v-d4b62460",
+    path: "/view/home.html",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-fce5cc60").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
     },
+  },
+  {
+    name: "v-19dcde9b",
+    path: "/view/",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-19dcde9b").then(next)
+    },
+  },
+  {
+    path: "/view/index.html",
+    redirect: "/view/"
   },
   {
     path: '*',
