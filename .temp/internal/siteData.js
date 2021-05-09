@@ -28,39 +28,9 @@ export const siteData = {
       },
       "regularPath": "/",
       "relativePath": "README.md",
-      "key": "v-3b60cb0b",
+      "key": "v-7cf31b21",
       "path": "/",
       "lastUpdated": "2021/5/6 下午5:45:33"
-    },
-    {
-      "title": "Three.js",
-      "frontmatter": {
-        "sidebar": "auto"
-      },
-      "regularPath": "/Three.js/",
-      "relativePath": "Three.js/README.md",
-      "key": "v-a6d4e5ca",
-      "path": "/Three.js/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "什么是web三维",
-          "slug": "什么是web三维"
-        },
-        {
-          "level": 2,
-          "title": "基本组成",
-          "slug": "基本组成"
-        }
-      ]
-    },
-    {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-fce5cc60",
-      "path": "/Three.js/home.html"
     },
     {
       "title": "JavaScript数据结构与算法",
@@ -69,7 +39,7 @@ export const siteData = {
       },
       "regularPath": "/algorithm/",
       "relativePath": "algorithm/README.md",
-      "key": "v-f6f3be6a",
+      "key": "v-61d8b18e",
       "path": "/algorithm/",
       "headers": [
         {
@@ -106,13 +76,43 @@ export const siteData = {
       "lastUpdated": "2021/5/6 下午5:45:33"
     },
     {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-23bc3f32",
+      "path": "/Three.js/home.html"
+    },
+    {
+      "title": "Three.js",
+      "frontmatter": {
+        "sidebar": "auto"
+      },
+      "regularPath": "/Three.js/",
+      "relativePath": "Three.js/README.md",
+      "key": "v-104af264",
+      "path": "/Three.js/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "什么是web三维",
+          "slug": "什么是web三维"
+        },
+        {
+          "level": 2,
+          "title": "基本组成",
+          "slug": "基本组成"
+        }
+      ]
+    },
+    {
       "title": "bind的实现",
       "frontmatter": {
         "sidebarDepth": 2
       },
       "regularPath": "/view/home.html",
       "relativePath": "view/home.md",
-      "key": "v-d4b62460",
+      "key": "v-1f840632",
       "path": "/view/home.html",
       "headers": [
         {
@@ -121,7 +121,7 @@ export const siteData = {
           "slug": "bind的实现"
         }
       ],
-      "lastUpdated": "2021/5/1 上午6:01:40"
+      "lastUpdated": "2021/5/8 下午7:25:54"
     },
     {
       "title": "JavaScript基础知识",
@@ -131,7 +131,7 @@ export const siteData = {
       },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
-      "key": "v-19dcde9b",
+      "key": "v-11d2e938",
       "path": "/view/",
       "headers": [
         {
@@ -310,9 +310,39 @@ export const siteData = {
           "slug": "分析"
         },
         {
+          "level": 3,
+          "title": "必刷题",
+          "slug": "必刷题"
+        },
+        {
           "level": 2,
           "title": "变量提升",
           "slug": "变量提升"
+        },
+        {
+          "level": 3,
+          "title": "全局上下文",
+          "slug": "全局上下文"
+        },
+        {
+          "level": 3,
+          "title": "函数上下文",
+          "slug": "函数上下文"
+        },
+        {
+          "level": 3,
+          "title": "执行过程",
+          "slug": "执行过程"
+        },
+        {
+          "level": 3,
+          "title": "进入执行上下文",
+          "slug": "进入执行上下文"
+        },
+        {
+          "level": 3,
+          "title": "代码执行",
+          "slug": "代码执行"
         },
         {
           "level": 2,
@@ -365,7 +395,7 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/7 下午6:36:41"
+      "lastUpdated": "2021/5/8 下午7:25:54"
     }
   ],
   "themeConfig": {

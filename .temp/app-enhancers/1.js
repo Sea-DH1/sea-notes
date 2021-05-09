@@ -1,2 +1,2 @@
-import "/Volumes/MacDocument/myProjects/sea-notes/node_modules/@vuepress/core/lib/node/internal-plugins/style/client.js"
+import "D:\\myProject\\sea-notes\\node_modules\\@vuepress\\core\\lib\\node\\internal-plugins\\style\\client.js"
 export default {}

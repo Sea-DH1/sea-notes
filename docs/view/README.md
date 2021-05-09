@@ -1138,9 +1138,181 @@ fContext = {
 
 闭包在计算机科学中也只是一个普通的概念，不要去想得太复杂。
 
+### 必刷题  
+接下来，看这道刷题必刷，面试必考的闭包题：  
+```js
+var data = []
+
+for(var i = 0; i < 3; i++) {
+  data[i] = function () {
+    console.log(i)
+  };
+}
+
+data[0]();
+data[1]();
+data[2]();
+```  
+答案都是3，分析一下原因：  
+当执行到`data[0]`函数之前，此时全局上下文的`VO`为：  
+```js
+globalContext = {
+  VO: {
+    data: [...],
+    i: 3
+  }
+}
+```  
+当执行`data[0]`函数的时候，`data[0]`函数的作用域链为：  
+```js
+data[0]Context = {
+  Scope: [AO, globalContext.VO]
+}
+```  
+`data[0]Context`的`AO`并没有`i`值，所以会从`globalContext.VO`中查找，`i`为`3`，所以打印的结果就是`3`。  
+`data[1]`和`data[2]`是一样的道理。  
+所以改成闭包看看：  
+```js
+var data = [];
+
+for (var i = 0; i < 3; i++) {
+  data[i] = (function (i) {
+    return function () {
+      console.log(i);
+    }
+  })
+}
+
+data[0]();
+data[1]();
+data[2]();
+```  
+当执行到`data[0]`函数之前，此时全局上下文的`VO`为：  
+```js
+globalContext = {
+  VO: {
+    data: [...],
+    i: 3
+  }
+}
+```  
+跟没改之前一模一样。  
+当执行`data[0]`函数的时候，`data[0]`函数的作用域链发生了改变：  
+```js
+data[0]Context = {
+  Scope: [AO, 匿名函数Context.AO globalContext.VO]
+}
+```  
+匿名函数执行上下文的AO为：  
+```js
+匿名函数Context = {
+  AO: {
+    arguments: {
+      0: 0,
+      length: 1
+    },
+    i: 0
+  }
+}  
+```  
+`data[0]Context`的`AO`并没有`i`值，所以会沿着作用域链从匿名函数`Context.AO`中查找，这时候就会找`i`为`0`，找到了就不会往`globalContext.VO`中查找了，即使`globalContext.VO`也有`i`的值（值为`3`），所以打印的结果就是`0`。  
+
+`data[1]`和`data[2]`是一样的道理
+
 ***
 
-## 变量提升
+## 变量提升  
+变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明。  
+因为不同执行上下文下的变量对象稍有不同，所以全局上下文下的变量对象和函数上下文下的变量对象。  
+
+### 全局上下文  
+先了解一个概念，叫全局对象。在[W3School](https://www.w3school.com.cn/jsref/jsref_obj_global.asp)中也介绍：  
+> 全局对象是预定义的对象，作为JavaScript的全局函数和全局属性的点位符。通过使用全局对象，可以访问所有其他所有预定义的对象、函数和属性。  
+> 在顶层JavaScript代码中，可以用关键字this引用全局对象。因为全局对象是作用域链的头，这意味着所有非限定性的变量和函数名都会作为该对象的属性来查询。  
+> 例如，当JavaScript代码引用parseInt()函数时，它引用的是全局对象的parseInt属性。全局对象是作用域链的头，还意味着在顶层JavaScript代码中声明的所有变量都将成为全局对象的属性。  
+
+如果看的不是很懂的话，请继续看下面的全局对象的介绍：  
+1、可以通过`this`引用，在客户端`JavaScript`中，全局对象就是`Window`对象。  
+```js
+console.log(this);
+```  
+2、全局对象是由`Object`构造函数实例化的一个对象。  
+```js
+console.log(this instanceof Object);
+```  
+3、预定义了一堆，一大堆函数和属性。  
+```js
+console.log(Math.random());
+console.log(this.Math.random());
+```  
+4、作为全局变量的宿主。  
+```js
+var a = 1;
+console.log(this.a);
+```  
+5、客户端`JavaScript`中，全局对象有`window`属性指向自身  
+```js
+var a = 1;
+console.log(window.a);
+
+this.window.b = 2;
+console.log(this.b);
+```  
+花了一个大篇幅介绍全局对象，其他就想说：  
+全局上下文中的变量对象就是全局对象！  
+
+### 函数上下文  
+在函数上下文中，用活动对象`(activation object, AO)`来表示变量对象。  
+
+活动对象和变量对象其实是一个东西，只是变量对象是规范上的或者说是引擎实现上的，不可在`JavaScript`环境中访问，只有到当进入一个执行上下文中，这个执行上下文的变量对象才会被激活，所有才叫`activation object`，而只有被激活的变量对象，也就是活动对象上的各种属性才能被访问。  
+
+活动对象是在进入函数上下文时刻被创建的，它通过函数的`arguments`属性初始化。`arguments`属性值是`Arguments`对象。  
+
+### 执行过程  
+执行上下文的代码会分成两个阶段进行处理：分析和执行，也可以叫做：  
+1、进入执行上下文  
+2、代码执行  
+
+### 进入执行上下文  
+当进入执行上下文时，这时候还没有执行代码，  
+变量对象会包括：  
+1、函数的所有形参（如果是函数上下文）  
+* 由名称和对应值组成的一个变量对象的属性被创建  
+* 没有实参，属性值设为undefined  
+2、函数声明  
+* 由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建  
+* 如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性  
+
+举个例子：  
+```js
+function foo(a) {
+  var b = 2;
+  function c() {}
+  var d = function() {};
+
+  b = 3;
+}
+
+foo(1);
+```  
+在进入执行上下文后，这时候的`AO`是：  
+```js
+AO = {
+  arguments: {
+    0: 1,
+    length: 1
+  },
+  a: 1,
+  b: undefined,
+  c: reference to function c(){},
+  d: undefined
+}
+```  
+
+### 代码执行  
+
+
+***
 
 ## this的指向
 
