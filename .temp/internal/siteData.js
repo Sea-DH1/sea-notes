@@ -16,21 +16,34 @@ export const siteData = {
   ],
   "pages": [
     {
-      "title": "Home",
+      "title": "Three.js",
       "frontmatter": {
-        "home": true,
-        "heroImage": "/logo.png",
-        "heroText": "Sea-DH1",
-        "tagline": "LeeDH笔记",
-        "actionText": "开始 →",
-        "actionLink": "/view/",
-        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+        "sidebar": "auto"
       },
-      "regularPath": "/",
-      "relativePath": "README.md",
-      "key": "v-7cf31b21",
-      "path": "/",
-      "lastUpdated": "2021/5/6 下午5:45:33"
+      "regularPath": "/Three.js/",
+      "relativePath": "Three.js/README.md",
+      "key": "v-a6d4e5ca",
+      "path": "/Three.js/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "什么是web三维",
+          "slug": "什么是web三维"
+        },
+        {
+          "level": 2,
+          "title": "基本组成",
+          "slug": "基本组成"
+        }
+      ]
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-fce5cc60",
+      "path": "/Three.js/home.html"
     },
     {
       "title": "JavaScript数据结构与算法",
@@ -39,7 +52,7 @@ export const siteData = {
       },
       "regularPath": "/algorithm/",
       "relativePath": "algorithm/README.md",
-      "key": "v-61d8b18e",
+      "key": "v-f6f3be6a",
       "path": "/algorithm/",
       "headers": [
         {
@@ -76,34 +89,21 @@ export const siteData = {
       "lastUpdated": "2021/5/6 下午5:45:33"
     },
     {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-23bc3f32",
-      "path": "/Three.js/home.html"
-    },
-    {
-      "title": "Three.js",
+      "title": "Home",
       "frontmatter": {
-        "sidebar": "auto"
+        "home": true,
+        "heroImage": "/logo.png",
+        "heroText": "Sea-DH1",
+        "tagline": "LeeDH笔记",
+        "actionText": "开始 →",
+        "actionLink": "/view/",
+        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
       },
-      "regularPath": "/Three.js/",
-      "relativePath": "Three.js/README.md",
-      "key": "v-104af264",
-      "path": "/Three.js/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "什么是web三维",
-          "slug": "什么是web三维"
-        },
-        {
-          "level": 2,
-          "title": "基本组成",
-          "slug": "基本组成"
-        }
-      ]
+      "regularPath": "/",
+      "relativePath": "README.md",
+      "key": "v-3b60cb0b",
+      "path": "/",
+      "lastUpdated": "2021/5/6 下午5:45:33"
     },
     {
       "title": "bind的实现",
@@ -112,7 +112,7 @@ export const siteData = {
       },
       "regularPath": "/view/home.html",
       "relativePath": "view/home.md",
-      "key": "v-1f840632",
+      "key": "v-d4b62460",
       "path": "/view/home.html",
       "headers": [
         {
@@ -131,7 +131,7 @@ export const siteData = {
       },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
-      "key": "v-11d2e938",
+      "key": "v-19dcde9b",
       "path": "/view/",
       "headers": [
         {
@@ -266,33 +266,33 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "1、原型链继承",
-          "slug": "_1、原型链继承"
+          "title": "原型链继承",
+          "slug": "原型链继承"
         },
         {
           "level": 3,
-          "title": "2、借用构造函数（经典继承）",
-          "slug": "_2、借用构造函数-经典继承"
+          "title": "借用构造函数（经典继承）",
+          "slug": "借用构造函数-经典继承"
         },
         {
           "level": 3,
-          "title": "3、组合继承",
-          "slug": "_3、组合继承"
+          "title": "组合继承",
+          "slug": "组合继承"
         },
         {
           "level": 3,
-          "title": "4、原型式继承",
-          "slug": "_4、原型式继承"
+          "title": "原型式继承",
+          "slug": "原型式继承"
         },
         {
           "level": 3,
-          "title": "5、寄生式继承",
-          "slug": "_5、寄生式继承"
+          "title": "寄生式继承",
+          "slug": "寄生式继承"
         },
         {
           "level": 3,
-          "title": "6、寄生组合式继承",
-          "slug": "_6、寄生组合式继承"
+          "title": "寄生组合式继承",
+          "slug": "寄生组合式继承"
         },
         {
           "level": 2,
@@ -345,6 +345,11 @@ export const siteData = {
           "slug": "代码执行"
         },
         {
+          "level": 3,
+          "title": "思考题",
+          "slug": "思考题"
+        },
+        {
           "level": 2,
           "title": "this的指向",
           "slug": "this的指向"
@@ -353,6 +358,46 @@ export const siteData = {
           "level": 2,
           "title": "立即执行函数",
           "slug": "立即执行函数"
+        },
+        {
+          "level": 3,
+          "title": "它是什么？",
+          "slug": "它是什么"
+        },
+        {
+          "level": 3,
+          "title": "它的核心",
+          "slug": "它的核心"
+        },
+        {
+          "level": 3,
+          "title": "函数，圆括号，错误",
+          "slug": "函数-圆括号-错误"
+        },
+        {
+          "level": 3,
+          "title": "立即执行函数表达式（IIFE）",
+          "slug": "立即执行函数表达式-iife"
+        },
+        {
+          "level": 3,
+          "title": "关于括号的重要笔记",
+          "slug": "关于括号的重要笔记"
+        },
+        {
+          "level": 3,
+          "title": "保存闭包的状态",
+          "slug": "保存闭包的状态"
+        },
+        {
+          "level": 3,
+          "title": "自执行匿名函数(\"Self-executing anonymous function\")有什么问题？",
+          "slug": "自执行匿名函数-self-executing-anonymous-function-有什么问题"
+        },
+        {
+          "level": 3,
+          "title": "最后：模块模式",
+          "slug": "最后-模块模式"
         },
         {
           "level": 2,
@@ -395,7 +440,7 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/8 下午7:25:54"
+      "lastUpdated": "2021/5/9 下午11:55:04"
     }
   ],
   "themeConfig": {
