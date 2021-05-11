@@ -16,6 +16,23 @@ export const siteData = {
   ],
   "pages": [
     {
+      "title": "Home",
+      "frontmatter": {
+        "home": true,
+        "heroImage": "/logo.png",
+        "heroText": "Sea-DH1",
+        "tagline": "LeeDH笔记",
+        "actionText": "开始 →",
+        "actionLink": "/view/",
+        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+      },
+      "regularPath": "/",
+      "relativePath": "README.md",
+      "key": "v-3b60cb0b",
+      "path": "/",
+      "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
       "title": "Three.js",
       "frontmatter": {
         "sidebar": "auto"
@@ -44,84 +61,6 @@ export const siteData = {
       "relativePath": "Three.js/home.md",
       "key": "v-fce5cc60",
       "path": "/Three.js/home.html"
-    },
-    {
-      "title": "JavaScript数据结构与算法",
-      "frontmatter": {
-        "sidebar": "auto"
-      },
-      "regularPath": "/algorithm/",
-      "relativePath": "algorithm/README.md",
-      "key": "v-f6f3be6a",
-      "path": "/algorithm/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "栈",
-          "slug": "栈"
-        },
-        {
-          "level": 3,
-          "title": "1、什么是栈？",
-          "slug": "_1、什么是栈"
-        },
-        {
-          "level": 3,
-          "title": "2、函数调用堆栈",
-          "slug": "_2、函数调用堆栈"
-        },
-        {
-          "level": 2,
-          "title": "队列",
-          "slug": "队列"
-        },
-        {
-          "level": 3,
-          "title": "1、队列是什么？",
-          "slug": "_1、队列是什么"
-        },
-        {
-          "level": 3,
-          "title": "2、异步队列",
-          "slug": "_2、异步队列"
-        }
-      ],
-      "lastUpdated": "2021/5/6 下午5:45:33"
-    },
-    {
-      "title": "Home",
-      "frontmatter": {
-        "home": true,
-        "heroImage": "/logo.png",
-        "heroText": "Sea-DH1",
-        "tagline": "LeeDH笔记",
-        "actionText": "开始 →",
-        "actionLink": "/view/",
-        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
-      },
-      "regularPath": "/",
-      "relativePath": "README.md",
-      "key": "v-3b60cb0b",
-      "path": "/",
-      "lastUpdated": "2021/5/6 下午5:45:33"
-    },
-    {
-      "title": "bind的实现",
-      "frontmatter": {
-        "sidebarDepth": 2
-      },
-      "regularPath": "/view/home.html",
-      "relativePath": "view/home.md",
-      "key": "v-d4b62460",
-      "path": "/view/home.html",
-      "headers": [
-        {
-          "level": 3,
-          "title": "bind的实现",
-          "slug": "bind的实现"
-        }
-      ],
-      "lastUpdated": "2021/5/8 下午7:25:54"
     },
     {
       "title": "JavaScript基础知识",
@@ -401,13 +340,78 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "instanceof原理",
-          "slug": "instanceof原理"
+          "title": "typeof和instanceof",
+          "slug": "typeof和instanceof"
+        },
+        {
+          "level": 3,
+          "title": "JavaScript数据类型",
+          "slug": "javascript数据类型"
+        },
+        {
+          "level": 3,
+          "title": "typeof原理",
+          "slug": "typeof原理"
+        },
+        {
+          "level": 3,
+          "title": "instanceof",
+          "slug": "instanceof"
+        },
+        {
+          "level": 3,
+          "title": "JavaScrtip原型链",
+          "slug": "javascrtip原型链"
+        },
+        {
+          "level": 3,
+          "title": "Symbol.hasInstance",
+          "slug": "symbol-hasinstance"
+        },
+        {
+          "level": 3,
+          "title": "总结",
+          "slug": "总结"
         },
         {
           "level": 2,
           "title": "柯里化",
           "slug": "柯里化"
+        },
+        {
+          "level": 3,
+          "title": "定义",
+          "slug": "定义-2"
+        },
+        {
+          "level": 3,
+          "title": "用途",
+          "slug": "用途"
+        },
+        {
+          "level": 3,
+          "title": "第一版",
+          "slug": "第一版"
+        },
+        {
+          "level": 3,
+          "title": "第二版",
+          "slug": "第二版"
+        },
+        {
+          "level": 3,
+          "title": "更易懂的实现",
+          "slug": "更易懂的实现"
+        },
+        {
+          "level": 3,
+          "title": "第三版",
+          "slug": "第三版"
+        },
+        {
+          "level": 3,
+          "title": "写在最后",
+          "slug": "写在最后"
         },
         {
           "level": 2,
@@ -420,9 +424,24 @@ export const siteData = {
           "slug": "浮点数精度"
         },
         {
-          "level": 2,
-          "title": "new操作符",
-          "slug": "new操作符"
+          "level": 3,
+          "title": "前言",
+          "slug": "前言"
+        },
+        {
+          "level": 3,
+          "title": "数据类型",
+          "slug": "数据类型"
+        },
+        {
+          "level": 3,
+          "title": "浮点数转二进制",
+          "slug": "浮点数转二进制"
+        },
+        {
+          "level": 3,
+          "title": "浮点数的存储",
+          "slug": "浮点数的存储"
         },
         {
           "level": 2,
@@ -440,7 +459,68 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/9 下午11:55:04"
+      "lastUpdated": "2021/5/10 下午6:54:26"
+    },
+    {
+      "title": "JavaScript数据结构与算法",
+      "frontmatter": {
+        "sidebar": "auto"
+      },
+      "regularPath": "/algorithm/",
+      "relativePath": "algorithm/README.md",
+      "key": "v-f6f3be6a",
+      "path": "/algorithm/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "栈",
+          "slug": "栈"
+        },
+        {
+          "level": 3,
+          "title": "1、什么是栈？",
+          "slug": "_1、什么是栈"
+        },
+        {
+          "level": 3,
+          "title": "2、函数调用堆栈",
+          "slug": "_2、函数调用堆栈"
+        },
+        {
+          "level": 2,
+          "title": "队列",
+          "slug": "队列"
+        },
+        {
+          "level": 3,
+          "title": "1、队列是什么？",
+          "slug": "_1、队列是什么"
+        },
+        {
+          "level": 3,
+          "title": "2、异步队列",
+          "slug": "_2、异步队列"
+        }
+      ],
+      "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
+      "title": "bind的实现",
+      "frontmatter": {
+        "sidebarDepth": 2
+      },
+      "regularPath": "/view/home.html",
+      "relativePath": "view/home.md",
+      "key": "v-d4b62460",
+      "path": "/view/home.html",
+      "headers": [
+        {
+          "level": 3,
+          "title": "bind的实现",
+          "slug": "bind的实现"
+        }
+      ],
+      "lastUpdated": "2021/5/8 下午7:25:54"
     }
   ],
   "themeConfig": {

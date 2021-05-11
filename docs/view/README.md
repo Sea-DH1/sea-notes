@@ -1584,15 +1584,583 @@ i; // ReferenceeError: i is not defined (it only exists inside the closure)
 模块模式方法不仅相当的厉害而且简单。非常少的代码，可以有效的利用与方法和属性相关的命名，在一个对象里，组织全部的模块代码即最小化了全局变量的污染也创造了使用变量。
 
 ***
-## instanceof原理
 
-## 柯里化
+## typeof和instanceof  
+### JavaScript数据类型  
+有八种内置类型  
+* null(空值)
+* undefined(未定义)
+* boolean(布尔值)
+* number(数字)
+* object(对象)
+* symbol(符号，ES6中新增)
+* Bigint(大整数，ES2020引入)  
+  
+> 除对象外，其他统称为”基本类型“。  
+
+```js
+typeof null // 'object'
+typeof undefined // 'undefined'
+typeof false // 'boolean'
+typeof 1 // 'number'
+typeof '1' // 'string'
+typeof {} // 'object'
+typeof [] // 'object'
+typeof new Date() // 'object'
+
+typeof Symbol(); // 'Symbol'
+typeof 123n  // 'bigint'
+```  
+这里的类型指的是值，变量是没有类型的，变量可以随时持有任何类型的值。JavaScript中变量是”弱类型“的，一个变量可以现在被赋值为字符串类型，随后又被赋值为数字类型。  
+
+`typeof`是一个操作符而不是函数，用来检测给定变量的数据类型。  
+> Symbol 是ES6引入的一种`原始数据`类型，表示独一无二的值。BigInt(大整数)是ES2020引入的一种新的数据类型，用来解决JavaScript中数字只能到53个二进制位（JavaScript所有数字都保存成64们浮点数，大于这个范围的整数，无法精确表示的总问题。（在平常的开发中，数据的id一般用string表示的原因）。）为了与Number类型区别，BigInt类型的数据必须添加后缀n。`1234`为普通整数，`1234n`为`BigInt`。了解更多可以看《ES6入门教程》  
+
+`typeof null`为什么返回`object`，稍后会从JavaScript数据底层存储机制来解释。  
+
+还有一种情况  
+```js
+function foo() {};
+typeof foo; // 'function'
+```  
+这样看来，`function`也是`JavaScript`的一个`内置类型`。然而查阅规范，就会知道，它实际上是`object`的一个”子类型“。具体来说，函数是”可调用对象“，它有一个内部属性`[[call]]`，该属性使其可以调用。`typeof`可以用来区分函数其他对象。  
+
+但是使用`typeof`不能判断对象具体是哪种类型，所有`typeof`返回值为"object"的对象（如数组，正则等）都包含一个内部属性`[[class]]`(可以把它看做一个内部的分类)。这个属性无法直接访问，一般通过`Object.prototype.toString(...)`来查看。  
+
+```js
+Object.prototype.toString.call(new Date); // '[object object]'
+Object.prototype.toString.call([]); // '[object Array]'
+Object.prototype.toString.call(/reg/ig); // '[object RegExp]'
+```  
+`instanceof`运算符也常常用来判断对象类型。用法：左边的运算数是一个`object`，右边运算数是对象类的名字或者构造函数；返回`true`或`false`。  
+
+```js
+[] instanceof Array; // true
+[] instanceof Object; // true
+[] instanceof RegExp; // false
+new Date instanceof Date; // true
+```  
+`instanceof`的内部机制是：检测构造函数的`prototype`属性是否出现在某个实例对象的原型链上。下面会详解介绍该部分。  
+
+### typeof原理  
+`typeof`原理：不同的对象在底层都表示为二进制，在JavaScript中二进制前（低）三位存储其类型信息。  
+* 000：对象
+* 010：浮点数
+* 100：字符串
+* 110：布尔
+* 1：整数
+
+`typeof null`为`object`，原因是因为不同的对象在底层都表示为二进制，在JavaScript中二进制前（低）三位都为0的话会被判断为`Object`类型，`null`的二进制表示全为0，自然前三位也是0，所以执行`typeof`时会返回`object`。一个不恰当的例子，假设所有的JavaScript对象都是16位的，也就是有16个0或1组成的序列，猜想如下：  
+```js
+Array: 1000100010001000
+null:  0000000000000000
+
+typeof [] // 'object'
+typeof null // 'object'
+```  
+因为`Array`和`null`的前三位都是000。为什么`Array`的前三位是100? 因为二进制中的”前“一般代表低位，比如二进制000000011对应十进制数是3，它的前三位是011。  
+
+### instanceof  
+要想从根本上理解，需要从两个方面入手：  
+* 语言规范中是如何定义这个运算的
+* JavaScript原型继承机制
+
+通俗一些讲，`instanceof`用来比较一个对象是否为某一个构造函数的实例。注意，`instanceof`运算符只能用于对象，不适用原始类型的值。  
+1、判断某个`实例`是否属性`某种类型`  
+```js
+function Foo() {};
+Foo.prototype.message = ...;
+const a = new Foo();
+```  
+2、也可以判断一个实例是否是其父类型或者祖先类型的实例。  
+```js
+function Car(make, model, year) {
+  this.make = make;
+  this.model = model;
+  this.year = year;
+}
+const auto = new Car('Honda', 'Accord', 1998);
+
+console.log(auto instanceof Car);
+// expected output: true
+
+console.log(auto instanceof Object);
+// expected output: true
+```  
+
+### JavaScrtip原型链  
+关于原型和原型链，可以阅读上面的文章[原型、原型链](/view/#原型、原型链)
+
+### Symbol.hasInstance  
+对象的`Symbol.hasInstance`属性，指向一个内部方法。当其他对象使用`instanceof`运算符，判断是否为该对象的实例时，会调用这个方法。比如，`foo instanceof Foo`在语言内部，实际调用的是`Foo[Symbol.hasInstance](foo)`。  
+```js
+class MyClass{
+  [Symbol.hasInstance](foo) {
+    return foo instanceof Arrya;
+  }
+}
+
+[1, 2, 3] instanceof new MyClass() // true
+```  
+
+### 总结  
+看完之后，脑子里可以把上面的内容串一下；看看下面的几个问题是否可以立刻想出来  
+* `JavaScript`有哪几种类型，都有哪些判断数据类型的操作，返回值是什么，原理是什么
+* `typeof null`为什么是`"object"`
+* 什么是`原型`，哪里是`[[prototype]]`的"尽头"，为什么要这么设计
+* `JavaScript`原型链的核心是什么
+* `instanceof`的原理是什么
+* `Symbol.hasInstance`又是什么（或者你自己实现一个`instanceof`）
+
+***
+
+## 柯里化   
+### 定义  
+维基百科中对柯里化（Currying）的定义为：  
+> In mathematics and computer science, currying is the technique of translating the evaluation of a function that takes multiple arguments (or a tuple of arguments) into evaluating a sequence of functions, each with a single argument.  
+
+翻译成中文：  
+在数学和计算机科学中，柯里化是一种将使用多个参数的一个函数转换成一系列使用一个参数的函数的技术。  
+
+举个例子：  
+```js
+function add(a, b) {
+  return a + b
+}
+
+// 执行 add 函数，一次传入两个参数即可
+add(1, 2) // 3
+
+// 假设有一个 curry 函数可以做到柯里化
+var addCurry = curry(add);
+addCurry(1)(2) // 3
+```  
+
+### 用途  
+我们会讲到如何写出这个 curry 函数，并且会将这个 curry 函数写得很强大，但是在编写之前，我们需要知道柯里化到底有什么用？  
+举个例子：  
+```js
+// 示例而已
+function ajax(type, url, data) {
+  var xhr = new XMLHttpRequest();
+  xhr.open(type, url, true);
+  xhr.send(data);
+}
+
+// 虽然 ajax 这个函数非常通用，但在重复调用的时候参数冗余
+ajax('POST', 'www.test.com', 'name=kevin')
+ajax('POST', 'www.test2.com', 'name=kevin')
+ajax('POST', 'www.test3.com', 'name=kevin')
+
+// 利用 curry
+var ajaxCurry = curry(ajax);
+
+// 以 POST 类型请求来自于 www.test.com 的数据
+var postFromTest = post('www.test.com');
+postFromTest('name=kevin');
+```  
+想想`jQuery`虽然有`$.ajax`这样通用的方法，但是也有`$.get`和`$.post`的语法糖。（当然jQuery底层是否是这样做的，我就没有研究了）。  
+
+`curry`的这种用途可以理解为：参数复用。本质上是降低通用性，提高适用性。  
+可以是即便如此，是不是依然感觉没什么用呢？  
+如果我们仅仅是把参数一个一个传进去，意义可能不大，但是如果我们是把柯里化后的函数传给其他函数比如map呢？  
+举个例子：  
+比如有这样一段数据：  
+```js
+var person = [{name: 'kevin'}, {name: 'daisy'}]
+```  
+如果要获取所有的name值，可以这样做：  
+```js
+var name = person.map(function(item) {
+  return item.name
+})
+```  
+不过如果有`curry`函数  
+```js
+var prop = curry(function(key, obj) {
+  return obj[key]
+});
+
+var name = person.map(prop('name'))
+```  
+为了获取`name`属性还要再编写一个`prop函数`，是不是又麻烦了些？  
+但是要注意，`prop函数`编写一次后，以后可以多次使用，实际上代码从原本的三行精简成了一行，而且你看代码是不是更加易懂了？  
+`person.map(prop('name'))`就好像直白的告诉你：person对象遍历(map)获取(prop)name属性。  
+
+### 第一版  
+未来会接触到更多有关柯里化的应用，不过那是未来的事情了，现在该编写这个`curry函数`了。  
+```js
+// 第一版
+var curry = function(fn) {
+  var args = [].slice.call(arguments, 1);
+  return function() {
+    var newArgs = args.concat([].slice.call(arguments));
+    return fn.apply(this, newArgs);
+  };
+};
+```  
+可以这样使用  
+```js
+function add(a, b) {
+  return a + b;
+}
+
+var addCurry = curry(add, 1, 2);
+addCurry() // 3
+
+var addCurry = curry(add, 1);
+addCurry(2) // 3
+
+var addCurry = curry(add);
+addCurry(1, 2) // 3
+```  
+已经有柯里化的感觉了，但是还没有达到要求，不过我们可以把这个函数用作辅助函数，帮助我们写真正的`curry函数`。  
+
+### 第二版  
+```js
+// 第二版
+function sub_curry(fn) {
+  var args = [].slice.call(arguments, 1);
+  return function() {
+    return fn.apply(this, args.concat([].slice.call(arguments)));
+  };
+}
+
+function curry(fn, length) {
+  length = length || fn.length;
+
+  var slice = Array.prototype.slice;
+
+  return function() {
+    if (arguments.length < length) {
+      var combined = [fn].concat(slice.call(arguments));
+      return curry(sub_curry.apply(this, combined), length - arguments.length);
+    } else {
+      return fn.apply(this, arguments);
+    }
+  }
+}
+```  
+验证下这个函数  
+```js
+var fn = curry(function(a, b, c) {
+  return [a, b, c]
+})
+fn('a', 'b', 'c') // ['a', 'b', 'c']
+fn('a', 'b')('c') // ['a', 'b', 'c']
+fn('a')('b')('c') // ['a', 'b', 'c']
+fn('a')('b', 'c') // ['a', 'b', 'c']
+```  
+效果已经达到需要的预期，然而这个`curry函数`的实现好难理解....  
+为了让大家更好的理解这个`curry函数`，给大家写个极简版的代码：  
+```js
+function sub_curry(fn) {
+  return function() {
+    return fn()
+  }
+}
+
+function curry(fn, length) {
+  length = length || 4;
+  return function() {
+    if (length > 1) {
+      return curry(sub_curry(fn), --length)
+    } else {
+      return fn()
+  }
+}
+
+var fn0 = function() {
+  console.log(1)
+}
+
+var fn1 = curry(fn0)
+fn1()()()() // 1
+```  
+先从理解这个`curry函数`开始。  
+
+当执行fn1()时，函数返回：  
+```js
+curry(sub_curry(fn0))
+// 相当于
+curry(function() {
+  return fn0
+})
+```  
+当执行fn1()()，函数返回：  
+```js
+curry(sub_curry(function() {
+  return fn0
+}))
+// 相当于
+curry(function() {
+  return (function() {
+    return fn0()
+  })()
+})
+// 相当于
+curry(function() {
+  return fn0()
+})
+```  
+当执行fn1()()()时，函数返回：  
+```js
+// 跟fn1()()的分析过程一样
+curry(function() {
+  return fn0()
+})
+```  
+当执行fn1()()()()时，因为此时length > 2为false，所以执行fn():  
+```js
+fn()
+// 相当于
+（function() {
+  return fn0()
+})()
+// 相当于
+fn0()
+// 执行fn0 函数，打印 1
+```  
+再回到真正的`curry函数`，以下面的例子为例：  
+```js
+var fn0 = function(a, b, c, d) {
+  return [a, b, c, d];
+}
+
+var fn1 = curry(fn0);
+fn1('a', 'b')('c')('d')
+```  
+当执行fn1('a', 'b')时：  
+```js
+fn1('a', 'b')
+// 相当于
+curry(sub_curry(fn0, 'a', 'b'))
+// 相当于
+// 注意... 只是一个示意，表示该函数执行时传入的参数会作为 fn0 后面的参数传入
+curry(function(...) {
+  return fn0('a', 'b', ...)
+})
+```  
+当执行fn1('a', 'b')('c')时，函数返回：  
+```js
+curry(sub_curry(function(...){
+  return fn0('a', 'b', '...')
+}), 'c')
+// 相当于
+curry(function(...) {
+  return (function(...) {return fn0('a', 'b', '...')})('c')
+})
+// 相当于
+curry(function(...) {
+  return fn0('a', 'b', 'c', '...')
+})
+```  
+当执行fn1('a', 'b')('c')('d')时，此时arguments.length < length 为 false ，执行 fn(arguments)，相当于：  
+```js
+(function(...) {
+  return fn0('a', 'b', 'c', '...')
+})('d')
+// 相当于
+fn0('a', 'b', 'c', 'd')
+```  
+函数执行结束。  
+
+所以，其实整段代码又很好理解：  
+`sub_curry`的作用就是用函数包裹原函数，然后给原函数传入之前的参数，当执行`fn0(...)(...)`的时候，执行包裹函数，返回原函数，然后再调用`sub_curry`再包裹函数，然后将新的参数混合旧的参数再传入原函数，直到函数参数的数目达到要求为止。  
+
+如果要明白`curry`函数的运行原理，还是要动手写一遍，尝试着分析执行步骤。  
+
+### 更易懂的实现  
+当然了，如果你觉得还是无法理解，你可以选择下面这种实现方式，可以实现同样的效果：  
+```js
+function curry(fn, args) {
+  var length = fn.length;
+
+  args = args || [];
+
+  return function() {
+    var _args = args.slice(0),
+    arg, i
+    
+    for (i = 0; i < arguments.length; i++) {
+      arg = arguments[i];
+      _args.push(arg);
+    }
+
+    if (_args.length < length) {
+      return curry.call(this, fn, _args);
+    } else {
+      return fn.apply(this, _args);
+    }
+  }
+}
+
+var fn = curry(function(a, b, c) {
+  console.log([a, b, c])
+})
+
+fn('a', 'b', 'c') // ['a', 'b', 'c']
+fn('a', 'b')('c') // ['a', 'b', 'c']
+fn('a')('b')('c') // ['a', 'b', 'c']
+fn('a')('b', 'c') // ['a', 'b', 'c']
+```  
+或许觉得这种方式更好理解，又能实现一样的效果，为什么不直接就讲这种呢？  
+因为想给大家介绍实现的方法嘛，不能因为难以理解就不给大家介绍。。  
+
+### 第三版  
+`curry函数`写到这里其实已经很完善了，但是注意这个函数的传参顺序必须是从左到右，根据形参的顺序今次传入，如果我不想根据这个顺序传呢？  
+可以创建一个占位符，比如这样：  
+```js
+var fn = curry(function(a, b, c) {
+  console.log([a, b, c]);
+});
+
+fn('a', _, 'c')('b') // ['a', 'b', 'c']
+```  
+直接看第三版的代码：  
+```js
+// 第三版
+function curry(fn, args, holes) {
+  length = fn.length;
+
+  args = args || [];
+
+  holes = holes || [];
+
+  return function() {
+    var _args = args.slice(0),
+    _holes = holes.slice(0),
+    argsLen = args.length,
+    holesLen = holes.length,
+    arg, i, index = 0;
+
+    for (i = 0; i < arguments.length; i++) {
+      arg = arguments[i];
+      // 处理类似 fn(1, _, _, 4)(_, 3) 这种情怀，index 需要指向 holes 正确的下标
+      if (arg === _ && holesLen) {
+        index++ 
+        if (index > holesLen) {
+          _args.push(arg);
+          _holes.push(argsLen - 1 + index - holesLen)
+        }
+      }
+      // 处理类似 fn(1)(_)这种情况
+      else if (arg === _) {
+        _args.push(arg);
+        _holes.push(argsLen + i)
+      }
+      // 处理类似 fn(_, 2)(1)，这种情况
+      else if (holesLen) {
+        // fn(_, 2)(_, 3)
+        if (index >= holesLen) {
+          _args.push(arg);
+        }
+        // fn(_, 2)(1)用参数 1 替换占位符
+        else {
+          _args.splice(_holes[index], 1, arg);
+          _holes.splice(index, 1)
+        }
+      } else {
+        _args.push(arg);
+      }
+    }
+    if (_holes.length || _args.length < length) {
+      return curry.call(this, fn, _args, _holes);
+    } else {
+      return fn.apply(this, _args);
+    }
+  }
+}
+
+var _ = {};
+
+var fn = curry(function(a, b, c, d, e) {
+  console.log([a, b, c, d, e])
+});
+
+// 验证输出全部都是[1, 2, 3, 4, 5,]
+fn(1, 2, 3, 4, 5);
+fn(_, 2, 3, 4, 5)(1);
+fn(1, _, 3, 4, 5)(2);
+fn(1, _, 3,)(_, 4)(2)(5);
+fn(1, _, _, 4)(_, 3)(2)(5);
+fn(_, 2)(_, _, 4)(1)(3)(5);
+```  
+
+### 写在最后  
+至此，已经实现了一个强大的`curry函数`，可是这个`curry函数`符合柯里化的定义吗？柯里化可是将一个多参数的函数转换成多个单参数的函数，但是现在我们不仅可以传入一个参数，还可以一次传入两个参数，甚至更多参数....这看起来更像一个柯里化`(curry)`和偏函数`(partial application)`的综合应用。
+
+***
+
 
 ## v8垃圾回收机制
+[查看出自掘金‘@小维FE’的文章](https://juejin.cn/post/6844904016325902344)
 
-## 浮点数精度
+***
 
-## new操作符
+## 浮点数精度  
+### 前言  
+0.1 + 0.2 是否等于 0.3 作为一道经典的面试题，已经广外熟知，说起原因，能回答出这是浮点数精度总是导致，也能辩证的看待这并非是ECMAScript这门语言的问题，今天就是具体看一直背后的原因。  
+
+### 数据类型  
+ECMAScript中的 Number 类型使用 IEEE754 标准来表示整数和浮点数值。所谓 IEEE754 标准，全称 IEEE 二进制浮点数算术标准，这个标准定义了表示浮点数的格式等内容。  
+
+在 IEEE754 中，规定了四种表示浮点数值的方式：单精确度（32位）、双精确度（64位）、延伸单精确度、与延伸双精确度。像 ECMAScript 采用的就是双精确度，也就是说，会用64位字节来储存一个浮点数。  
+
+### 浮点数转二进制  
+我们来看下 1020 用十进制的表示：  
+> 1020 = 1 * 10^3 + 0 * 10^2 + 2 * 10^1 + 0 * 10^0  
+
+所以 1020 用十进制表示就是 1020....  
+
+如果 1020 用二进制来表示呢？  
+> 1020 = 1 * 2^9 + 1 * 2^8 + 1 * 2^7 + 1 * 2^6 + 1 * 2^5 + 1 * 2^4 + 1 * 2^3 + 1 * 2^2 + 1 * 2^1 + 1 * 2^0  
+
+所以 1020 的二进制为 1111111100  
+
+那如果是 0.75 用二进制表示呢？同理应该是： 
+> 0.75 = a * 2^-1 + b * 2^-2 + c* 2^-3 + d * 2^-4 + ...  
+因为使用的是二进制，这里的abcd....的值要么是0，要么是1.  
+
+那怎么算出 abcd..... 的值呢，可以两边不停的乘以2算出来，解法如下：  
+> 0.75 = a * 2^-1 + b * 2^-2 + c * 2^-3 + d * 2^-4...  
+
+两边同时乘以2  
+> 1 + 0.5 = a * 2^0 + b * 2^-1 + c * 2^-2 + d * 2^-3...(所以a = 1)  
+
+剩下的：  
+> 0.5 = b * 2^-1 + c * 2^-2 + d * 2^-3...  
+
+再同时乘以2  
+> 1 + 0 = b * 2^0 + c * 2^-2 + d * 2^-3...(所以 b = 1)  
+
+所以 0.75 用二进制表示就是0.ab，也就是0.11  
+
+然而不是所有的数都像0.75那么好算，我们来算下0.1：  
+```
+0.1 = a * 2^-1 + b * 2^ -2 + c * 2^-3 + d * 2^-4 + ...
+
+0 + 0.2 = a * 2^0 + b * 2^-1 + c * 2^-2 + ...  (a = 0)
+0 + 0.4 = b * 2^0 + c * 2^-1 + d * 2^-2 + ...  (b = 0)
+0 + 0.8 = c * 2^0 + d * 2^-1 + e * 2^-2 + ...  (c = 0)
+0 + 0.6 = d * 2^0 + e * 2^-1 + f * 2^-2 + ...  (d = 1)
+0 + 0.2 = e * 2^0 + f * 2^-1 + g * 2^-2 + ...  (e = 0)
+0 + 0.4 = f * 2^0 + g * 2^-1 + h * 2^-2 + ...  (f = 0)
+0 + 0.8 = g * 2^0 + h * 2^-1 + i * 2^-2 + ...  (g = 0)
+0 + 0.6 = h * 2^0 + i * 2^-1 + j * 2^-2 + ...  (h = 1)
+...
+```  
+然后你就会发现，这个计算在不停的循环，所以 0.1 用二进制表示就是 0.00011001100110011......  
+
+### 浮点数的存储  
+虽然0.1转成二进制时是一个无限循环的数，但计算机总要储存吧，我们知道ECMAScript使用64位字节来储存一个浮点数，那具体是怎么储存的呢？这就要说回 IEEE754 这个标准了，毕竟是这个标准规定了存储的方式。  
+
+这个标准认为，一个浮点数（Value）可以这样表示：  
+> Value = sign * exponent * fraction  
+
+看起来很抽象的样子，简单理解就是科学计数法......
+
+***
 
 ## 事件循环机制
 
