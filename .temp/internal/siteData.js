@@ -16,23 +16,6 @@ export const siteData = {
   ],
   "pages": [
     {
-      "title": "Home",
-      "frontmatter": {
-        "home": true,
-        "heroImage": "/logo.png",
-        "heroText": "Sea-DH1",
-        "tagline": "LeeDH笔记",
-        "actionText": "开始 →",
-        "actionLink": "/view/",
-        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
-      },
-      "regularPath": "/",
-      "relativePath": "README.md",
-      "key": "v-3b60cb0b",
-      "path": "/",
-      "lastUpdated": "2021/5/6 下午5:45:33"
-    },
-    {
       "title": "Three.js",
       "frontmatter": {
         "sidebar": "auto"
@@ -55,18 +38,26 @@ export const siteData = {
       ]
     },
     {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-fce5cc60",
-      "path": "/Three.js/home.html"
+      "title": "Home",
+      "frontmatter": {
+        "home": true,
+        "heroImage": "/logo.png",
+        "heroText": "Sea-DH1",
+        "tagline": "LeeDH笔记",
+        "actionText": "开始 →",
+        "actionLink": "/view/",
+        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+      },
+      "regularPath": "/",
+      "relativePath": "README.md",
+      "key": "v-3b60cb0b",
+      "path": "/",
+      "lastUpdated": "2021/5/6 下午5:45:33"
     },
     {
       "title": "JavaScript基础知识",
       "frontmatter": {
-        "sidebar": "auto",
-        "sidebarDepth": 2
+        "sidebar": "auto"
       },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
@@ -294,6 +285,51 @@ export const siteData = {
           "slug": "this的指向"
         },
         {
+          "level": 3,
+          "title": "前言",
+          "slug": "前言"
+        },
+        {
+          "level": 3,
+          "title": "Types",
+          "slug": "types"
+        },
+        {
+          "level": 3,
+          "title": "Reference",
+          "slug": "reference"
+        },
+        {
+          "level": 3,
+          "title": "GetValue",
+          "slug": "getvalue"
+        },
+        {
+          "level": 3,
+          "title": "如何确定this的值",
+          "slug": "如何确定this的值"
+        },
+        {
+          "level": 3,
+          "title": "具体分析",
+          "slug": "具体分析"
+        },
+        {
+          "level": 3,
+          "title": "揭晓结果",
+          "slug": "揭晓结果"
+        },
+        {
+          "level": 3,
+          "title": "补充",
+          "slug": "补充-2"
+        },
+        {
+          "level": 3,
+          "title": "多说一句",
+          "slug": "多说一句"
+        },
+        {
           "level": 2,
           "title": "立即执行函数",
           "slug": "立即执行函数"
@@ -426,7 +462,7 @@ export const siteData = {
         {
           "level": 3,
           "title": "前言",
-          "slug": "前言"
+          "slug": "前言-2"
         },
         {
           "level": 3,
@@ -444,13 +480,43 @@ export const siteData = {
           "slug": "浮点数的存储"
         },
         {
+          "level": 3,
+          "title": "浮点数的运算",
+          "slug": "浮点数的运算"
+        },
+        {
+          "level": 3,
+          "title": "其他",
+          "slug": "其他"
+        },
+        {
           "level": 2,
           "title": "事件循环机制",
           "slug": "事件循环机制"
         },
         {
+          "level": 3,
+          "title": "前言",
+          "slug": "前言-3"
+        },
+        {
+          "level": 3,
+          "title": "正文",
+          "slug": "正文"
+        },
+        {
+          "level": 3,
+          "title": "node环境下的事件循环机制",
+          "slug": "node环境下的事件循环机制"
+        },
+        {
+          "level": 3,
+          "title": "结尾",
+          "slug": "结尾"
+        },
+        {
           "level": 2,
-          "title": "promise原理",
+          "title": "Promise原理",
           "slug": "promise原理"
         },
         {
@@ -459,7 +525,33 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/10 下午6:54:26"
+      "lastUpdated": "2021/5/11 下午6:35:47"
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-fce5cc60",
+      "path": "/Three.js/home.html"
+    },
+    {
+      "title": "bind的实现",
+      "frontmatter": {
+        "sidebarDepth": 2
+      },
+      "regularPath": "/view/home.html",
+      "relativePath": "view/home.md",
+      "key": "v-d4b62460",
+      "path": "/view/home.html",
+      "headers": [
+        {
+          "level": 3,
+          "title": "bind的实现",
+          "slug": "bind的实现"
+        }
+      ],
+      "lastUpdated": "2021/5/8 下午7:25:54"
     },
     {
       "title": "JavaScript数据结构与算法",
@@ -503,24 +595,6 @@ export const siteData = {
         }
       ],
       "lastUpdated": "2021/5/6 下午5:45:33"
-    },
-    {
-      "title": "bind的实现",
-      "frontmatter": {
-        "sidebarDepth": 2
-      },
-      "regularPath": "/view/home.html",
-      "relativePath": "view/home.md",
-      "key": "v-d4b62460",
-      "path": "/view/home.html",
-      "headers": [
-        {
-          "level": 3,
-          "title": "bind的实现",
-          "slug": "bind的实现"
-        }
-      ],
-      "lastUpdated": "2021/5/8 下午7:25:54"
     }
   ],
   "themeConfig": {
@@ -552,6 +626,7 @@ export const siteData = {
     "sidebar": [
       {
         "title": "Javascript基础",
+        "collapsable": true,
         "children": [
           "view/",
           "view/home"

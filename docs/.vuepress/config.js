@@ -36,7 +36,7 @@ module.exports = {
     sidebar: [
       {
         title: 'Javascript基础',
-        // collapsable: false, // 可选的, 默认值是 true,
+        collapsable: true, // 可选的, 默认值是 true,
         children: ['view/', 'view/home']
       },
       {

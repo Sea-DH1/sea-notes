@@ -1,6 +1,5 @@
 ---
 sidebar: auto
-sidebarDepth: 2
 ---
 
 # JavaScript基础知识
@@ -1378,7 +1377,359 @@ var foo = 1;
 
 ***
 
-## this的指向
+## this的指向  
+
+### 前言
+当JavaScript代码执行一段可执行代码(executable code)时，会创建对应的执行上下文(execution context)  
+
+对于每个执行上下文，都有三个重要属性  
+* 变量对象(Variable object, VO)
+* 作用域链(Scope chain)
+* this  
+
+先奉上ECMAScript5.1规范开始讲起：  
+
+英文版：[http://es5.github.io/#x15.1](http://es5.github.io/#x15.1)  
+中文版：[http://yanhaijing.com/es5/#115](http://yanhaijing.com/es5/#115)  
+
+### Types  
+首先是第8章Types：  
+> Types are further subclassified into ECMAScript language types and specification types.  
+
+> An ECMAScript language type corresponds to values that are directly manipulated by an ECMAScript programmer using the ECMAScript language. The ECMAScript language types are Undefined, Null, Boolean, String, Number, and Object.  
+
+> A specification type corresponds to meta-values that are used within algorithms to describe the semantics of ECMAScript language constructs and ECMAScript language types. The specification types are Reference, List, Completion, Property Descriptor, Property Identifier, Lexical Environment, and Environment Record.  
+
+简单的翻译一下：  
+> ECMAScript 的类型分为语言类型和规范类型。  
+
+> ECMAScript 语言类型是开发者直接使用ECMAScript可以操作的。其实就是常说的Undefined, Null, Boolean, String, Number, 和Object。  
+
+> 而规范类型相当于 meta-values, 是用来用算法描述 ECMAScript 语言结构和 ECMAScript 语言类型的。规范类型包括：Reference, List, Completion, Property Descriptor, Property Identifier, Lexical Environment, 和 Environment Record。  
+
+没懂？没关系，只要知道在 ECMAScript 规范中还有一种只存在于规范中的类型，它们的作用是用来描述语言底层的行为逻辑。  
+
+重点是便是其中的`Reference`类型。它与`this`的指向有着密切的关联。  
+
+### Reference  
+那什么又是`Reference`？  
+先看8.7章 The Reference Spectification Type:  
+> The Reference type is used to explain the behaviour of such operators as delete, typeof and the assignment operators.  
+所以`Reference`类型就是用来解释诸如 delete、typeof 以及赋值等操作行为的。  
+
+抄袭尤雨溪大佬的话，就是：  
+> 这里的Reference是一个Specification Type, 也就是”只存于规范里的抽象类型“。它们是为了更好地描述底层行为逻辑才存在的，但并不存在于实际的js代码中。  
+
+再看接下来的这段具体介绍`Reference`内容：  
+> A Reference is a resolved name binding.  
+> A Reference consists of three components, the base value, the referenced name and the Boolean valued strict reference flag.  
+> The base value is either undefined, an Object, a Boolean, a String, a Number, or an environment record(10.2.1).  
+> A base value of undefined indicates that the reference could not be resolved to binding. The referenced name is a String.  
+
+这段讲述了`Reference`的构成，由三个组成部分，分别是：  
+* base value
+* referenced name
+* strict reference  
+
+可是这些到底是什么呢？  
+简单的理解的话：  
+base value就是属性所在的对象或者就是EnvironmentRecord，它的值只可能是undefined, an Object, a Boolean, a String, a Number, or an environment record其中一种。  
+
+referenced name就是属性的名称。  
+
+举个例子：  
+```js
+var foo = 1;
+
+// 对应的Reference是： 
+var fooReference = {
+  base: EnvironmentRecord,
+  name: 'foo',
+  strict: false
+};
+```  
+
+再举个例子：  
+```js
+var foo = {
+  bar: function () {
+    return this;
+  }
+}
+
+foo.bar(); // foo
+
+var BarReference = {
+  base: foo,
+  propertyName: 'bar',
+  strict: false
+};
+```  
+
+而且规范中还提供了获取Reference组成部分的方法，比如GetBase和isProertyReference。  
+这两个方法很简单，简单看一看：  
+
+1.GetBase  
+> GetBase(V). Returns the base value component of the reference V.  
+返回`reference`的`base value`。  
+
+2、isPropertyReference  
+> isPropertyReference(V). Returns true if either the base value is an object or HasPrimitiveBase(V) is true; otherwise returns false.  
+简单的理解：如果`base value`是一个对象，就返回true。  
+
+### GetValue  
+除此之外，紧接着8.7.1章规范中就讲了一个用于从`Reference`类型获取对应值的方法：`GetValue`。  
+简单模拟`GetValue`的使用：  
+```js
+var foo = 1;
+
+var fooReference = {
+  base: EnvironmentRecord,
+  name: 'foo',
+  strict: false
+};
+
+GetValue(fooReference) // 1;
+```  
+GetValue 返回对象属性真正的值，但是要注意：  
+调用`GetValue`，返回的将是具体的值，而不再是一个`Reference`  
+这个很重要，这个很重要，这个很重要。  
+
+### 如何确定this的值  
+
+关于`Reference`讲了那么多，为什么要讲`Reference`呢？到底`Reference`跟本文的主题`this`有哪些关联呢？如果你能耐心看完之前的内容，以下开始进入高能阶段：  
+
+看规范 11.2.3 Function Calls:  
+这里讲了当函数调用的时候，如何确定`this`的取值。  
+
+只看第一步、第六步、第七步：  
+> 1. Let ref be the result of evaluating MemberExpression.  
+
+> 6. if Type(ref) is Reference, then  
+
+>    a.If IsPropertyReference(ref) is true, then  
+>    i.Let thisValue be GetBase(ref).  
+>    b.Else, the base of ref is an Environment Record  
+>    i.Let thisValue be the result of calling the ImplicitThisValue concrete method of GetBase(ref).  
+
+> 7. Else, Type(ref) is not Reference.  
+
+>    a. Let thisValue be undefined.  
+
+描述一下：  
+1. 计算MemberExpression 的结果赋值给ref  
+2. 判断ref是不是一个 Reference 类型  
+``` 
+   2.1 如果 ref 是 Reference，并且 IsPropertyReference(ref)是true，那么this的值为GetBase(ref)
+   2.2 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么this的值为 ImplicitThisValue(ref)
+   2.3 如果 ref 不是 Reference，那么 this 的值为 undefined
+```  
+
+### 具体分析  
+一步一步看：  
+1. 计算MemberExpression的结果赋值给ref  
+什么是 MemberExpression？看规范 11.2 Left-Hand-Side Expressions:  
+MemberExpression: 
+* PrimaryExpression // 原始表达式可以参见《JavaScript权威指南第四章》
+* FunctionExpression // 函数定义表达式  
+* MemberExpression [Expression] // 属性访问表达式
+* MemberExpression . IdentifierName // 属性访问表达式
+* new MemberExpression Arguments // 对象创建表达式  
+
+举个例子：  
+```js
+function foo() {
+  console.log(this)
+}
+
+foo(); // MemberExpression是foo
+
+function foo() {
+  return function() {
+    console.log(this)
+  }
+}
+
+foo()(); // MemberExpression 是 foo
+
+var foo = {
+  bar: function() {
+    return this;
+  }
+}
+
+foo.bar(); // MemberExpression 是 foo.bar
+```  
+
+所以简单理解`MemberExpression`其实就是()左边的部分。  
+
+2. 判断 ref 是不是一个 Reference 类型。  
+关键就在于看规范是如果处理各种`MemberExpression`，返回的结果是不是一个`Reference`类型。  
+
+举最后一个例子：  
+```js
+var value = 1;
+
+var foo = {
+  value: 2,
+  bar: function() {
+    return this.value();
+  }
+}
+
+// 示例1
+console.log(foo.bar());
+// 示例2
+console.log((foo.bar)());
+// 示例3
+console.log((foo.bar = foo.bar)());
+// 示例
+console.log((false || foo.bar)());
+// 示例
+console.log((foo.bar, foo.bar)());
+```  
+
+#### foo.bar()  
+在示例1中，`MemberExpression`计算的结果是foo.bar，那么`foo.bar`是不是一个`Reference`呢？  
+查看规范 11.2.1 Property Accessors, 这里展示了一个计算的过程，什么都不管了，就看最后一步：  
+> Return a value of type Reference whose base value is baseValue and whose referenced name is propertyNameString, and whose strict mode flag is strict.  
+
+我们得知该表达式返回了一个`Reference`类型！  
+
+根据之前的内容，知道该值为：  
+```js
+var Reference = {
+  base: foo,
+  name: 'bar',
+  strict: false
+};
+```  
+
+接下来按照2.1的判断流程走：  
+> 2.1 如果 ref 是 Reference，并且 IsPropertyReference(ref)是true，那么this的值为GetBase(ref)  
+
+该值是`Reference`类型，那么`IsPropertyReference(ref)`的结果是多少呢？  
+前面我们已经铺垫了`IsPropertyReference`方法，如果`base value`是一个对象，结果返回`true`。  
+`base value`为`foo`，是一个对象，所以`IsPropertyReference(ref)`结果为`true`  
+这个时候就可以确定`this`的值了：  
+```js
+this = GetBase(ref)
+```  
+
+GetBase也已经铺垫了，获得base value值，这个例子中就是foo，所以this的值就是foo，示例1的结果就是2！  
+
+上面的例子证明了`this`指向`foo`。知道了原理后，剩下的就更快了。  
+
+#### (foo.bar)()  
+看示例2：  
+```js
+console.log((foo.bar)());
+```  
+`foo.bar`被`()`包住，就看规范11.1.6 The Grouping Operator  
+
+直接看结果部分：  
+> Return the result of evaluating Expression. This may be of type Reference.  
+> NOTE This algorithm does not apply GetValue to the result of evaluating Expression.  
+
+实际上`()`并没有对`MemberExpression`进行计算，所以其实跟示例1的结果是一样的。  
+
+(foo.bar = foo.bar)()  
+看示例3，有赋值操作符，查看规范 11.13.1 Simple Assignment (=):  
+计算的第三步：  
+> 3.Let rval be GetValue(rref).  
+因为使用了`GetValue`，所以返回的值是不是`Reference`类型，  
+
+按照之前讲的判断逻辑：  
+> 2.3 如果 ref 不是Reference，那么 this 的值为 undefined  
+
+`this`为`undefined`，非严格模式下，`this`的值为`undefined`的时候，其值会被隐式转换为全局对象。  
+
+#### (false || foo.bar)()  
+看示例4，逻辑与算法，查看规范 11.11 Binary Logical Operators：  
+计算第二步：  
+> 2.Let lval be GetValue(lref)  
+
+因为使用了`GetValue`，所以返回的不是`Reference`类型，`this`为`undefined`  
+
+#### (foo.bar, foo.bar)()  
+看示例5，逗号操作符，查看规范 11.14 Comma Operator(,)  
+计算第二步：  
+> 2.Call GetValue(lref).  
+因为使用了`GetValue`，所以返回的不是`Reference`类型，`this`为`undefined`  
+
+### 揭晓结果  
+所以最后一个例子的结果是：  
+```js
+var value = 1;
+
+var foo = {
+  value: 2,
+  bar: function () {
+    return this.value;
+  }
+}
+
+// 示例1
+console.log(foo.bar()); // 2
+// 示例2
+console.log((foo.bar)()); // 2
+// 示例3
+console.log((foo.bar = foo.bar)()); // 1
+// 示例4
+console.log((false || foo.bar)()); // 1
+// 示例5
+console.log((foo.bar, foo.bar)()); // 1
+```  
+
+::: warning
+注意：以上是在非严格模式下的结果，严格模式下因为`this`返回`undefined`，所以示例3会报错。
+:::  
+
+### 补充  
+最最后，忘记了一个最最普通的情况：  
+```js
+function foo() {
+  console.log(this)
+}
+
+foo();
+```  
+`MemberExpression`是`foo`，解析标识符，查看规范`10.3.1 Identifier Resolution`，会返回一个`Reference`类型的值：  
+```js
+var fooReference = {
+  base: EnvironmentRecord,
+  name: 'foo',
+  strict: false
+}
+```  
+接下来进行判断：  
+> 2.1如果 ref 是 Reference，并且IsPropertyReference(ref)是true，那么this的值为GetBase(ref)  
+
+因为 base value 是 EnvironmentRecord，并不是一个 Object 类型，还记得前面讲过的 base value 的取值可能吗？ 只可能是undefined, an Object, a Boolean, a String, a Number, 和 an environment record 中的一种。  
+
+isPropertyReference(ref)的结果为 false，进入下判断：  
+> 2.2如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么 this 的值为 ImplicitThisValue(ref)  
+base value 正是 Environment Record，所以会调 ImplicitThisValue(ref)  
+查看规范 10.2.1.1.6， ImplicitThisValue 方法的介绍：该函数始终返回undefined。  
+所以最后`this`的值就是`undefined`。  
+
+### 多说一句  
+尽管可以简单的理解`this`为调用函数的对象，如果是这样的话，如何解释下面这个例子呢？  
+```js
+var value = 1;
+
+var foo = {
+  value: 2,
+  bar: function() {
+    return this.value;
+  }
+}
+
+console.log((false || foo.bar)()); // 1
+```  
+此外，又如何确定调用函数的对象是谁呢？在写`this`文章之初，我就面临着这些问题，最后还是放弃从多个情形下给大家讲解 this 指向的思路，而是追根溯源的从 ECMASciript 规范讲解 this 的指向，尽管从这个角度写起来和读起来都比较吃力，但是一旦多读几遍，明白原理，绝对会给你一个全新的视角看待 this 。而你也就能明白，尽管 foo() 和 (foo.bar = foo.bar)() 最后结果都指向了 undefined，但是两者从规范的角度上却有着本质的区别。 
+
+***
 
 ## 立即执行函数  
 ### 它是什么？  
@@ -2158,12 +2509,312 @@ ECMAScript中的 Number 类型使用 IEEE754 标准来表示整数和浮点数�
 这个标准认为，一个浮点数（Value）可以这样表示：  
 > Value = sign * exponent * fraction  
 
-看起来很抽象的样子，简单理解就是科学计数法......
+看起来很抽象的样子，简单理解就是科学计数法......  
+
+比如 -1020，用科学计数法表示就是：  
+> -1 * 10^3 * 1.02  
+
+sign就是 -1，exponent 就是10^3, fraction就是1.02  
+对于二进制也是一样，以0.1的二进制0.00011001100110011......这个数来说：  
+可以表示为：  
+> 1 * 2^4 * 1.1001100110011......   
+其中sign就是1，exponent就是2^-4，fraction就是1.1001100110011......  
+而当只做二进制科学计数法的表示时，这个Value的表示可以再具体一点变成：  
+V = (-1)^S * (1 + Fraction) * 2^E  
+(如果所有的浮点数都可以这样表示，那么存储的时候就把这其中会变化的一些值存储起来就好了)  
+来一点点看：  
+(-1)^S 表示符号位，当S = 0, V为正数；当S = 1，V为负数。  
+
+再看(1 + Fraction)，这是因为所有的浮点数都可以表示为1.xxxx * 2^xxx的形式，前面的一定是1.xxx，那干脆我们就不存储这个1了，直接存后面的xxxxxx好了，这也就是Fraction的部分。  
+
+最后再看2^E  
+如果是1020.75，对应二进制就是1111111100.11，对应二进制科学计数法就是1 * 1.111111110011 * 2^9，E的值就是9，而如果是0.1，对应二进制是1 * 1.1001100110011...... * 2^-4，E的值就是-4，也就是说，E既可能是负数，又可能是正数，那问题就来了，那该怎么储存这个E呢？  
+
+可以这样解决，假如用8位字节来存储E这个数，如果只有正数的话，储存的值的范围是0 ~ 254，而如果要储存正负数的话，值的范围就是-127 ~ 127，在存储的时候，把要存储的数字加上127，这样当要存-127的时候，我们存0，当存127的时候，存254，这样就解决了存负数的问题。对应的，当取值的时候，再减去127。  
+
+所以呢，真到实际存储的时候，并不会直接存储E，而是会存储E + bias，当用8个字节的时候，这个bias就是127。  
+
+所以，如果要存储一个浮点数，存S和Fraction和E + bias这三个值就好了，那具体要分配多少个字节位来存储这些数呢？  
+IEEE754给出了标准：  
+
+![IEEE754标准](../images/view/IEEE754.jpeg)  
+
+在这个标准下：  
+我们会用1位存储S，0表示正数，1表示负数。  
+用11位存储E + bias，对于11位来说，bias的值是2^(11-1) - 1，也就是1023。  
+用52位存储Fraction。  
+举个例子，就拿0.1来看，对应二进制是1 * 1.1001100110011...... * 2^-4，Sign是0，E + bias是-4 + 1023 = 1019，1019用二进制表示是1111111011，Fraction是1001100110011......  
+对应64个字节位的完整表示就是：  
+> 0 01111111011 1001100110011001100110011001100110011001100110011010  
+
+同理，0.2表示的完整表示是： 
+> 0 01111111100 1001100110011001100110011001100110011001100110011010  
+
+所以当0.1存下来的时候，就已经发生了精度丢失，当用浮点数进行运算的时候，使用的其实是精度丢失后的数。  
+
+### 浮点数的运算  
+关于浮点数的运算，一般由以下五个步骤完成：对阶、尾数运算、规格化、舍入处理、溢出判断。来简单看一下0.1和0.2的计算。  
+
+首先是对阶，所谓对阶，就是把阶码调整为相同，比如0.1是1.1001100110011...... * 2^-4，阶码是-4，而0.2就是1.0011001100110... * 2^-3，阶码是-3，两个阶码不同，所以先调整为相同的阶码再进行计算，调整原则是小阶对大阶，也就是0.1的-4调整为-3，对应变成0.11001100110011...... * 2^3  
+
+接下来是尾数计算：  
+```
+  0.1100110011001100110011001100110011001100110011001101
++ 1.1001100110011001100110011001100110011001100110011010
+————————————————————————————————————————————————————————
+ 10.0110011001100110011001100110011001100110011001100111
+```  
+
+得到结果为 10.0110011001100110011001100110011001100110011001100111 * 2^-3  
+
+将这个结果处理一下，即结果规格化，变成1.0011001100110011001100110011001100110011001100110011(1) * 2^-2  
+
+括号里的1意思是说计算后这个1超出了范围，所以要被舍弃了。  
+
+再然后是舍入，四舍五入对应到二进制中，就是0舍1入，因为我们要把括号里面的1丢了，所以这里会进1，结果变成  
+
+1.0011001100110011001100110011001100110011001100110100 * 2^-2  
+
+本来还有一个溢出判断，因为这里不涉及，就不讲了。  
+
+所以最终的结果存成64位就是：  
+
+> 0 01111111101 0011001100110011001100110011001100110011001100110100  
+
+将它转换为10进制数就得到 0.30000000000000004440892098500626  
+
+因为两次存储时的精度丢失加上一次运算时的精度丢失，最终导致了 0.1 + 0.2 !== 0.3  
+
+### 其他  
+```js
+// 十进制转二进制
+parseFloat(0.1).toString(2);
+=> "0.0001100110011001100110011001100110011001100110011001101"
+
+// 二进制转十进制
+parseInt(1100100,2)
+=> 100
+
+// 以指定的精度返回该数值对象的字符串表示
+(0.1 + 0.2).toPrecision(21)
+=> "0.300000000000000044409"
+(0.3).toPrecision(21)
+=> "0.299999999999999988898"
+```
 
 ***
 
 ## 事件循环机制
 
-## promise原理
+### 前言  
+web开发者都知道，JavaScript从诞生之日起就是一门单线程的非阻塞的脚本语言。这是由其最初的用途来决定的：与浏览器交互。  
+单线程意味着，JavaScript代码在执行的任何时候，都只有一个主线程来处理所有的任务。  
+
+而非阻塞则是当代码需要进行一项异步任务，（无法立刻返回结果，需要花一定时间才能返回的任务，如I/O事件）的时候，主线程会挂起（pending）这个任务，然后在异步任务返回结果的时候再根据一定规则去执行相应的回调。  
+
+单线程是必要的，也JavaScript这门语言的基石，原因之一在其最初也是最主要的执行环境————浏览器中，我们需要进行各种各样的dom操作。试想一下如果JavaScript是多线程的，那么当两个线程同时对dom进行一项操作，例如一个向其添加事件，而另一个删除了这个dom，此时该如何处理呢？因此，为了保证不会发生类似于这个例子中的情景，JavaScript选择只用一个主线程来执行代码，这样就保证了程序执行的一致性。  
+
+当然，现如今人们也意识到，单线程在保证了执行顺序的同时也限制了JavaScript的效率，因此开发出了web worker技术。这项技术号称让JavaScript成为一门多线程语言。  
+
+然而，使用web worker技术开发的多线程有着诸多限制，例如：所有新线程都受主线程的完全控制，不能独立执行。这意味着这些”线程“实际上应属性主线程的子线程。另外，这些子线程并没有执行I/O操作的权限，只能为主线程分担一些诸如计算等任务。所以严格来讲这些线程并没有完整的功能，也因此这项技术并非改变了JavaScript语言的单线程本质。  
+
+可以预见，未来的JavaScript也会一直是一门单线程的语言。  
+
+话说回来，前面提到JavaScript的另一个特点是”非阻塞“，那么JavaScript引擎到底是如何实现的这一点呢？答案就是这篇文章的主角———— event loop(事件循环)  
+
+*注：虽然nodejs中的也存在与传统浏览器环境下的相似的事件循环。然而两者间却有着诸多不同，故把两者分开，单独解释。*
+
+### 正文  
+
+#### 浏览器环境下的js引擎的事件循环机制  
+#### 1、执行栈与事件队列  
+当javascript代码执行的时候会将不同的变量存于内存中的不同位置：堆（heap）和栈（stack）中来加以区分。其中，堆里存放着一些对象。而栈中则存放着一些基础类型变量以及对象的指针。 但是我们这里说的执行栈和上面这个栈的意义却有些不同。
+
+我们知道，当我们调用一个方法的时候，js会生成一个与这个方法对应的执行环境（context），又叫执行上下文。这个执行环境中存在着这个方法的私有作用域，上层作用域的指向，方法的参数，这个作用域中定义的变量以及这个作用域的this对象。 而当一系列方法被依次调用的时候，因为js是单线程的，同一时间只能执行一个方法，于是这些方法被排队在一个单独的地方。这个地方被称为执行栈。
+
+当一个脚本第一次执行的时候，js引擎会解析这段代码，并将其中的同步代码按照执行顺序加入执行栈中，然后从头开始执行。如果当前执行的是一个方法，那么js会向执行栈中添加这个方法的执行环境，然后进入这个执行环境继续执行其中的代码。当这个执行环境中的代码 执行完毕并返回结果后，js会退出这个执行环境并把这个执行环境销毁，回到上一个方法的执行环境。。这个过程反复进行，直到执行栈中的代码全部执行完毕。
+
+下面这个图片非常直观的展示了这个过程，其中的global就是初次运行脚本时向执行栈中加入的代码：  
+![事件循环机制](../images/view/event-loop1.gif)  
+
+从图片可知，一个方法执行会向执行栈中加入这个方法的执行环境，在这个执行环境中还可以调用其他方法，甚至是自己，其结果不过是在执行栈中再添加一个执行环境。这个过程可以是无限进行下去的，除非发生了栈溢出，即超过了所能使用内存的最大值。
+
+以上的过程说的都是同步代码的执行。那么当一个异步代码（如发送ajax请求数据）执行后会如何呢？前文提过，js的另一大特点是非阻塞，实现这一点的关键在于下面要说的这项机制——事件队列（Task Queue）。
+
+js引擎遇到一个异步事件后并不会一直等待其返回结果，而是会将这个事件挂起，继续执行执行栈中的其他任务。当一个异步事件返回结果后，js会将这个事件加入与当前执行栈不同的另一个队列，我们称之为事件队列。被放入事件队列不会立刻执行其回调，而是等待当前执行栈中的所有任务都执行完毕， 主线程处于闲置状态时，主线程会去查找事件队列是否有任务。如果有，那么主线程会从中取出排在第一位的事件，并把这个事件对应的回调放入执行栈中，然后执行其中的同步代码...，如此反复，这样就形成了一个无限的循环。这就是这个过程被称为“事件循环（Event Loop）”的原因。
+
+这里还有一张图来展示这个过程：  
+![事件循环机制](../images/view/event-loop2.png)  
+图中的stack表示我们所说的执行栈，web apis则是代表一些异步事件，而callback queue即事件队列。  
+
+#### 2、macro task与micro task  
+
+以上的事件循环过程是一个宏观的表述，实际上因为异步任务之间并不相同，因此他们的执行优先级也有区别。不同的异步任务被分为两类：微任务（micro task）和宏任务（macro task）。
+
+以下事件属于宏任务：
+* setInterval()
+* setTimeout()
+
+以下事件属性微任务：  
+* new Promise()
+* new MutaionObserver()  
+
+前面我们介绍过，在一个事件循环中，异步事件返回结果后会被放到一个任务队列中。然而，根据这个异步事件的类型，这个事件实际上会被对应的宏任务队列或者微任务队列中去。并且在当前执行栈为空的时候，主线程会 查看微任务队列是否有事件存在。如果不存在，那么再去宏任务队列中取出一个事件并把对应的回到加入当前执行栈；如果存在，则会依次执行队列中事件对应的回调，直到微任务队列为空，然后去宏任务队列中取出最前面的一个事件，把对应的回调加入当前执行栈...如此反复，进入循环。
+
+我们只需记住 **当前执行栈执行完毕时会立刻先处理所有微任务队列中的事件，然后再去宏任务队列中取出一个事件。同一次事件循环中，微任务永远在宏任务之前执行。**  
+
+这样就能解释下面这段代码的结果：  
+```js
+setTimeout(function () {
+    console.log(1);
+});
+
+new Promise(function(resolve,reject){
+    console.log(2)
+    resolve(3)
+}).then(function(val){
+    console.log(val);
+})
+```  
+结果为：  
+```
+2
+3
+1
+```  
+
+### node环境下的事件循环机制  
+
+#### 1、与浏览器环境有何不同?  
+在node中，事件循环表现出的状态与浏览器中大致相同。不同的是node中有一套自己的模型。node中事件循环的实现是依靠的libuv引擎。我们知道node选择chrome v8引擎作为js解释器，v8引擎将js代码分析后去调用对应的node api，而这些api最后则由libuv引擎驱动，执行对应的任务，并把不同的事件放在不同的队列中等待主线程执行。 因此实际上node中的事件循环存在于libuv引擎中。  
+
+#### 2、事件循环模型  
+下面是一个libuv引擎中的事件循环的模型：  
+```js
+
+┌───────────────────────┐
+┌─>│        timers         │
+│  └──────────┬────────────┘
+│  ┌──────────┴────────────┐
+│  │     I/O callbacks     │
+│  └──────────┬────────────┘
+│  ┌──────────┴────────────┐
+│  │     idle, prepare     │
+│  └──────────┬────────────┘      ┌───────────────┐
+│  ┌──────────┴────────────┐      │   incoming:   │
+│  │         poll          │<──connections───     │
+│  └──────────┬────────────┘      │   data, etc.  │
+│  ┌──────────┴────────────┐      └───────────────┘
+│  │        check          │
+│  └──────────┬────────────┘
+│  ┌──────────┴────────────┐
+└──┤    close callbacks    │
+   └───────────────────────┘
+
+```  
+*注：模型中的每一个方块代表事件循环的一个阶段*  
+
+这个模型是node官网上的一篇文章中给出的，我下面的解释也都来源于这篇文章。我会在文末把文章地址贴出来，有兴趣的朋友可以亲自与看看原文。
+
+#### 3、事件循环各阶段详解  
+从上面这个模型中，我们可以大致分析出node中的事件循环的顺序：
+
+外部输入数据-->轮询阶段(poll)-->检查阶段(check)-->关闭事件回调阶段(close callback)-->定时器检测阶段(timer)-->I/O事件回调阶段(I/O callbacks)-->闲置阶段(idle, prepare)-->轮询阶段...
+
+以上各阶段的名称是根据我个人理解的翻译，为了避免错误和歧义，下面解释的时候会用英文来表示这些阶段。
+
+这些阶段大致的功能如下：
+
+timers: 这个阶段执行定时器队列中的回调如 setTimeout() 和 setInterval()。
+I/O callbacks: 这个阶段执行几乎所有的回调。但是不包括close事件，定时器和setImmediate()的回调。
+idle, prepare: 这个阶段仅在内部使用，可以不必理会。
+poll: 等待新的I/O事件，node在一些特殊情况下会阻塞在这里。
+check: setImmediate()的回调会在这个阶段执行。
+close callbacks: 例如socket.on('close', ...)这种close事件的回调。
+下面我们来按照代码第一次进入libuv引擎后的顺序来详细解说这些阶段：  
+
+#### poll阶段  
+当个v8引擎将js代码解析后传入libuv引擎后，循环首先进入poll阶段。poll阶段的执行逻辑如下： 先查看poll queue中是否有事件，有任务就按先进先出的顺序依次执行回调。 当queue为空时，会检查是否有setImmediate()的callback，如果有就进入check阶段执行这些callback。但同时也会检查是否有到期的timer，如果有，就把这些到期的timer的callback按照调用顺序放到timer queue中，之后循环会进入timer阶段执行queue中的 callback。 这两者的顺序是不固定的，收到代码运行的环境的影响。如果两者的queue都是空的，那么loop会在poll阶段停留，直到有一个i/o事件返回，循环会进入i/o callback阶段并立即执行这个事件的callback。
+
+值得注意的是，poll阶段在执行poll queue中的回调时实际上不会无限的执行下去。有两种情况poll阶段会终止执行poll queue中的下一个回调：1.所有回调执行完毕。2.执行数超过了node的限制。  
+
+#### check阶段  
+check阶段专门用来执行setImmediate()方法的回调，当poll阶段进入空闲状态，并且setImmediate queue中有callback时，事件循环进入这个阶段。
+
+#### close阶段  
+当一个socket连接或者一个handle被突然关闭时（例如调用了socket.destroy()方法），close事件会被发送到这个阶段执行回调。否则事件会用process.nextTick（）方法发送出去。  
+
+#### timer阶段  
+这个阶段以先进先出的方式执行所有到期的timer加入timer队列里的callback，一个timer callback指得是一个通过setTimeout或者setInterval函数设置的回调函数。  
+
+#### I/O callback阶段  
+如上文所言，这个阶段主要执行大部分I/O事件的回调，包括一些为操作系统执行的回调。例如一个TCP连接生错误时，系统需要执行回调来获得这个错误的报告。  
+
+#### 4、process.nextTick,setTimeout与setImmediate的区别与使用场景  
+在node中有三个常用的用来推迟任务执行的方法：process.nextTick,setTimeout（setInterval与之相同）与setImmediate
+
+这三者间存在着一些非常不同的区别：  
+
+#### process.nextTick()  
+尽管没有提及，但是实际上node中存在着一个特殊的队列，即nextTick queue。这个队列中的回调执行虽然没有被表示为一个阶段，当时这些事件却会在每一个阶段执行完毕准备进入下一个阶段时优先执行。当事件循环准备进入下一个阶段之前，会先检查nextTick queue中是否有任务，如果有，那么会先清空这个队列。与执行poll queue中的任务不同的是，这个操作在队列清空前是不会停止的。这也就意味着，错误的使用process.nextTick()方法会导致node进入一个死循环。。直到内存泄漏。
+
+那么合适使用这个方法比较合适呢？下面有一个例子：  
+```js
+const server = net.createServer(() => {}).listen(8080);
+
+server.on('listening', () => {});
+```  
+这个例子中当，当listen方法被调用时，除非端口被占用，否则会立刻绑定在对应的端口上。这意味着此时这个端口可以立刻触发listening事件并执行其回调。然而，这时候on('listening)还没有将callback设置好，自然没有callback可以执行。为了避免出现这种情况，node会在listen事件中使用process.nextTick()方法，确保事件在回调函数绑定后被触发。  
+
+#### setTimeout()和setImmediate()  
+在三个方法中，这两个方法最容易被弄混。实际上，某些情况下这两个方法的表现也非常相似。然而实际上，这两个方法的意义却大为不同。
+
+setTimeout()方法是定义一个回调，并且希望这个回调在我们所指定的时间间隔后第一时间去执行。注意这个“第一时间执行”，这意味着，受到操作系统和当前执行任务的诸多影响，该回调并不会在我们预期的时间间隔后精准的执行。执行的时间存在一定的延迟和误差，这是不可避免的。node会在可以执行timer回调的第一时间去执行你所设定的任务。
+
+setImmediate()方法从意义上将是立刻执行的意思，但是实际上它却是在一个固定的阶段才会执行回调，即poll阶段之后。有趣的是，这个名字的意义和之前提到过的process.nextTick()方法才是最匹配的。node的开发者们也清楚这两个方法的命名上存在一定的混淆，他们表示不会把这两个方法的名字调换过来---因为有大量的node程序使用着这两个方法，调换命名所带来的好处与它的影响相比不值一提。
+
+setTimeout()和不设置时间间隔的setImmediate()表现上及其相似。猜猜下面这段代码的结果是什么？  
+```js
+setTimeout(() => {
+    console.log('timeout');
+}, 0);
+
+setImmediate(() => {
+    console.log('immediate');
+});
+```  
+实际上，答案是不一定。没错，就连node的开发者都无法准确的判断这两者的顺序谁前谁后。这取决于这段代码的运行环境。运行环境中的各种复杂的情况会导致在同步队列里两个方法的顺序随机决定。但是，在一种情况下可以准确判断两个方法回调的执行顺序，那就是在一个I/O事件的回调中。下面这段代码的顺序永远是固定的：  
+```js
+const fs = require('fs');
+
+fs.readFile(__filename, () => {
+    setTimeout(() => {
+        console.log('timeout');
+    }, 0);
+    setImmediate(() => {
+        console.log('immediate');
+    });
+});
+```  
+答案永远是：
+```
+immediate
+timeout
+```  
+因为在I/O事件的回调中，setImmediate方法的回调永远在timer的回调前执行。
+
+### 结尾  
+JavaScript的事件循环是这门语言中非常重要且基础的概念。清楚的了解了事件循环的执行顺序和每一个阶段的特点，可以使我们对一段异步代码的执行顺序有一个清晰的认识，从而减少代码运行的不确定性。合理的使用各种延迟事件的方法，有助于代码更好的按照其优先级去执行。这篇文章期望用最易理解的方式和语言准确描述事件循环这个复杂过程，但由于作者自己水平有限，文章中难免出现疏漏。如果您发现了文章中的一些问题，欢迎在留言中提出，我会尽量回复这些评论，把错误更正。
+
+
+***
+
+## Promise原理
+
+
+***
 
 ## generator原理
+
+
+***

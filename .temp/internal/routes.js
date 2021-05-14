@@ -9,18 +9,6 @@ import GlobalLayout from "/Volumes/MacDocument/myProjects/sea-notes/node_modules
 injectComponentOption(GlobalLayout, 'mixins', rootMixins)
 export const routes = [
   {
-    name: "v-3b60cb0b",
-    path: "/",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-3b60cb0b").then(next)
-    },
-  },
-  {
-    path: "/index.html",
-    redirect: "/"
-  },
-  {
     name: "v-a6d4e5ca",
     path: "/Three.js/",
     component: GlobalLayout,
@@ -33,12 +21,16 @@ export const routes = [
     redirect: "/Three.js/"
   },
   {
-    name: "v-fce5cc60",
-    path: "/Three.js/home.html",
+    name: "v-3b60cb0b",
+    path: "/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-fce5cc60").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-3b60cb0b").then(next)
     },
+  },
+  {
+    path: "/index.html",
+    redirect: "/"
   },
   {
     name: "v-19dcde9b",
@@ -53,6 +45,22 @@ export const routes = [
     redirect: "/view/"
   },
   {
+    name: "v-fce5cc60",
+    path: "/Three.js/home.html",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-fce5cc60").then(next)
+    },
+  },
+  {
+    name: "v-d4b62460",
+    path: "/view/home.html",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
+    },
+  },
+  {
     name: "v-f6f3be6a",
     path: "/algorithm/",
     component: GlobalLayout,
@@ -63,14 +71,6 @@ export const routes = [
   {
     path: "/algorithm/index.html",
     redirect: "/algorithm/"
-  },
-  {
-    name: "v-d4b62460",
-    path: "/view/home.html",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
-    },
   },
   {
     path: '*',
