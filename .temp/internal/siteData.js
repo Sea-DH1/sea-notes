@@ -16,13 +16,30 @@ export const siteData = {
   ],
   "pages": [
     {
+      "title": "Home",
+      "frontmatter": {
+        "home": true,
+        "heroImage": "/logo.png",
+        "heroText": "Sea-DH1",
+        "tagline": "LeeDH笔记",
+        "actionText": "开始 →",
+        "actionLink": "/view/",
+        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+      },
+      "regularPath": "/",
+      "relativePath": "README.md",
+      "key": "v-7cf31b21",
+      "path": "/",
+      "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
       "title": "Three.js",
       "frontmatter": {
         "sidebar": "auto"
       },
       "regularPath": "/Three.js/",
       "relativePath": "Three.js/README.md",
-      "key": "v-a6d4e5ca",
+      "key": "v-104af264",
       "path": "/Three.js/",
       "headers": [
         {
@@ -38,21 +55,73 @@ export const siteData = {
       ]
     },
     {
-      "title": "Home",
+      "title": "JavaScript数据结构与算法",
       "frontmatter": {
-        "home": true,
-        "heroImage": "/logo.png",
-        "heroText": "Sea-DH1",
-        "tagline": "LeeDH笔记",
-        "actionText": "开始 →",
-        "actionLink": "/view/",
-        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+        "sidebar": "auto"
       },
-      "regularPath": "/",
-      "relativePath": "README.md",
-      "key": "v-3b60cb0b",
-      "path": "/",
+      "regularPath": "/algorithm/",
+      "relativePath": "algorithm/README.md",
+      "key": "v-61d8b18e",
+      "path": "/algorithm/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "栈",
+          "slug": "栈"
+        },
+        {
+          "level": 3,
+          "title": "1、什么是栈？",
+          "slug": "_1、什么是栈"
+        },
+        {
+          "level": 3,
+          "title": "2、函数调用堆栈",
+          "slug": "_2、函数调用堆栈"
+        },
+        {
+          "level": 2,
+          "title": "队列",
+          "slug": "队列"
+        },
+        {
+          "level": 3,
+          "title": "1、队列是什么？",
+          "slug": "_1、队列是什么"
+        },
+        {
+          "level": 3,
+          "title": "2、异步队列",
+          "slug": "_2、异步队列"
+        }
+      ],
       "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
+      "title": "bind的实现",
+      "frontmatter": {
+        "sidebarDepth": 2
+      },
+      "regularPath": "/view/home.html",
+      "relativePath": "view/home.md",
+      "key": "v-1f840632",
+      "path": "/view/home.html",
+      "headers": [
+        {
+          "level": 3,
+          "title": "bind的实现",
+          "slug": "bind的实现"
+        }
+      ],
+      "lastUpdated": "2021/5/8 下午7:25:54"
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-23bc3f32",
+      "path": "/Three.js/home.html"
     },
     {
       "title": "JavaScript基础知识",
@@ -61,7 +130,7 @@ export const siteData = {
       },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
-      "key": "v-19dcde9b",
+      "key": "v-11d2e938",
       "path": "/view/",
       "headers": [
         {
@@ -520,81 +589,67 @@ export const siteData = {
           "slug": "promise原理"
         },
         {
+          "level": 3,
+          "title": "链式调用",
+          "slug": "链式调用"
+        },
+        {
+          "level": 3,
+          "title": "reject",
+          "slug": "reject"
+        },
+        {
+          "level": 3,
+          "title": "异常处理",
+          "slug": "异常处理"
+        },
+        {
+          "level": 3,
+          "title": "Finally方法",
+          "slug": "finally方法"
+        },
+        {
+          "level": 3,
+          "title": "resolve 方法和 reject 方法",
+          "slug": "resolve-方法和-reject-方法"
+        },
+        {
+          "level": 3,
+          "title": "Promise.all",
+          "slug": "promise-all"
+        },
+        {
+          "level": 3,
+          "title": "Promise.race",
+          "slug": "promise-race"
+        },
+        {
+          "level": 3,
+          "title": "总结",
+          "slug": "总结-2"
+        },
+        {
+          "level": 3,
+          "title": "补充说明",
+          "slug": "补充说明"
+        },
+        {
+          "level": 3,
+          "title": "参考资料",
+          "slug": "参考资料"
+        },
+        {
+          "level": 3,
+          "title": "完整 Promise 模型",
+          "slug": "完整-promise-模型"
+        },
+        {
           "level": 2,
           "title": "generator原理",
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/11 下午6:35:47"
-    },
-    {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-fce5cc60",
-      "path": "/Three.js/home.html"
-    },
-    {
-      "title": "bind的实现",
-      "frontmatter": {
-        "sidebarDepth": 2
-      },
-      "regularPath": "/view/home.html",
-      "relativePath": "view/home.md",
-      "key": "v-d4b62460",
-      "path": "/view/home.html",
-      "headers": [
-        {
-          "level": 3,
-          "title": "bind的实现",
-          "slug": "bind的实现"
-        }
-      ],
-      "lastUpdated": "2021/5/8 下午7:25:54"
-    },
-    {
-      "title": "JavaScript数据结构与算法",
-      "frontmatter": {
-        "sidebar": "auto"
-      },
-      "regularPath": "/algorithm/",
-      "relativePath": "algorithm/README.md",
-      "key": "v-f6f3be6a",
-      "path": "/algorithm/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "栈",
-          "slug": "栈"
-        },
-        {
-          "level": 3,
-          "title": "1、什么是栈？",
-          "slug": "_1、什么是栈"
-        },
-        {
-          "level": 3,
-          "title": "2、函数调用堆栈",
-          "slug": "_2、函数调用堆栈"
-        },
-        {
-          "level": 2,
-          "title": "队列",
-          "slug": "队列"
-        },
-        {
-          "level": 3,
-          "title": "1、队列是什么？",
-          "slug": "_1、队列是什么"
-        },
-        {
-          "level": 3,
-          "title": "2、异步队列",
-          "slug": "_2、异步队列"
-        }
-      ],
-      "lastUpdated": "2021/5/6 下午5:45:33"
+      "lastUpdated": "2021/5/14 下午6:05:16"
     }
   ],
   "themeConfig": {
