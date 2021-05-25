@@ -16,6 +16,23 @@ export const siteData = {
   ],
   "pages": [
     {
+      "title": "Home",
+      "frontmatter": {
+        "home": true,
+        "heroImage": "/logo.png",
+        "heroText": "Sea-DH1",
+        "tagline": "LeeDH笔记",
+        "actionText": "开始 →",
+        "actionLink": "/view/",
+        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+      },
+      "regularPath": "/",
+      "relativePath": "README.md",
+      "key": "v-3b60cb0b",
+      "path": "/",
+      "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
       "title": "Three.js",
       "frontmatter": {
         "sidebar": "auto"
@@ -38,20 +55,54 @@ export const siteData = {
       ]
     },
     {
-      "title": "Home",
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-fce5cc60",
+      "path": "/Three.js/home.html"
+    },
+    {
+      "title": "JavaScript数据结构与算法",
       "frontmatter": {
-        "home": true,
-        "heroImage": "/logo.png",
-        "heroText": "Sea-DH1",
-        "tagline": "LeeDH笔记",
-        "actionText": "开始 →",
-        "actionLink": "/view/",
-        "footer": "MIT Licensed | Copyright © 2021-present Sea-DH1"
+        "sidebar": "auto"
       },
-      "regularPath": "/",
-      "relativePath": "README.md",
-      "key": "v-3b60cb0b",
-      "path": "/",
+      "regularPath": "/algorithm/",
+      "relativePath": "algorithm/README.md",
+      "key": "v-f6f3be6a",
+      "path": "/algorithm/",
+      "headers": [
+        {
+          "level": 2,
+          "title": "栈",
+          "slug": "栈"
+        },
+        {
+          "level": 3,
+          "title": "1、什么是栈？",
+          "slug": "_1、什么是栈"
+        },
+        {
+          "level": 3,
+          "title": "2、函数调用堆栈",
+          "slug": "_2、函数调用堆栈"
+        },
+        {
+          "level": 2,
+          "title": "队列",
+          "slug": "队列"
+        },
+        {
+          "level": 3,
+          "title": "1、队列是什么？",
+          "slug": "_1、队列是什么"
+        },
+        {
+          "level": 3,
+          "title": "2、异步队列",
+          "slug": "_2、异步队列"
+        }
+      ],
       "lastUpdated": "2021/5/6 下午5:45:33"
     },
     {
@@ -525,15 +576,7 @@ export const siteData = {
           "slug": "generator原理"
         }
       ],
-      "lastUpdated": "2021/5/11 下午6:35:47"
-    },
-    {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-fce5cc60",
-      "path": "/Three.js/home.html"
+      "lastUpdated": "2021/5/14 下午6:05:16"
     },
     {
       "title": "bind的实现",
@@ -552,49 +595,6 @@ export const siteData = {
         }
       ],
       "lastUpdated": "2021/5/8 下午7:25:54"
-    },
-    {
-      "title": "JavaScript数据结构与算法",
-      "frontmatter": {
-        "sidebar": "auto"
-      },
-      "regularPath": "/algorithm/",
-      "relativePath": "algorithm/README.md",
-      "key": "v-f6f3be6a",
-      "path": "/algorithm/",
-      "headers": [
-        {
-          "level": 2,
-          "title": "栈",
-          "slug": "栈"
-        },
-        {
-          "level": 3,
-          "title": "1、什么是栈？",
-          "slug": "_1、什么是栈"
-        },
-        {
-          "level": 3,
-          "title": "2、函数调用堆栈",
-          "slug": "_2、函数调用堆栈"
-        },
-        {
-          "level": 2,
-          "title": "队列",
-          "slug": "队列"
-        },
-        {
-          "level": 3,
-          "title": "1、队列是什么？",
-          "slug": "_1、队列是什么"
-        },
-        {
-          "level": 3,
-          "title": "2、异步队列",
-          "slug": "_2、异步队列"
-        }
-      ],
-      "lastUpdated": "2021/5/6 下午5:45:33"
     }
   ],
   "themeConfig": {
