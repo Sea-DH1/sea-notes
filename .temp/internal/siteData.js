@@ -28,13 +28,17 @@ export const siteData = {
       },
       "regularPath": "/",
       "relativePath": "README.md",
-<<<<<<< HEAD
       "key": "v-3b60cb0b",
-=======
-      "key": "v-7cf31b21",
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
       "path": "/",
       "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-fce5cc60",
+      "path": "/Three.js/home.html"
     },
     {
       "title": "Three.js",
@@ -43,7 +47,7 @@ export const siteData = {
       },
       "regularPath": "/Three.js/",
       "relativePath": "Three.js/README.md",
-      "key": "v-104af264",
+      "key": "v-a6d4e5ca",
       "path": "/Three.js/",
       "headers": [
         {
@@ -59,28 +63,13 @@ export const siteData = {
       ]
     },
     {
-<<<<<<< HEAD
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-fce5cc60",
-      "path": "/Three.js/home.html"
-    },
-    {
-=======
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
       "title": "JavaScript数据结构与算法",
       "frontmatter": {
         "sidebar": "auto"
       },
       "regularPath": "/algorithm/",
       "relativePath": "algorithm/README.md",
-<<<<<<< HEAD
       "key": "v-f6f3be6a",
-=======
-      "key": "v-61d8b18e",
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
       "path": "/algorithm/",
       "headers": [
         {
@@ -123,7 +112,7 @@ export const siteData = {
       },
       "regularPath": "/view/home.html",
       "relativePath": "view/home.md",
-      "key": "v-1f840632",
+      "key": "v-d4b62460",
       "path": "/view/home.html",
       "headers": [
         {
@@ -135,21 +124,13 @@ export const siteData = {
       "lastUpdated": "2021/5/8 下午7:25:54"
     },
     {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-23bc3f32",
-      "path": "/Three.js/home.html"
-    },
-    {
       "title": "JavaScript基础知识",
       "frontmatter": {
         "sidebar": "auto"
       },
       "regularPath": "/view/",
       "relativePath": "view/README.md",
-      "key": "v-11d2e938",
+      "key": "v-19dcde9b",
       "path": "/view/",
       "headers": [
         {
@@ -608,32 +589,6 @@ export const siteData = {
           "slug": "promise原理"
         },
         {
-<<<<<<< HEAD
-          "level": 2,
-          "title": "generator原理",
-          "slug": "generator原理"
-        }
-      ],
-      "lastUpdated": "2021/5/14 下午6:05:16"
-    },
-    {
-      "title": "bind的实现",
-      "frontmatter": {
-        "sidebarDepth": 2
-      },
-      "regularPath": "/view/home.html",
-      "relativePath": "view/home.md",
-      "key": "v-d4b62460",
-      "path": "/view/home.html",
-      "headers": [
-        {
-          "level": 3,
-          "title": "bind的实现",
-          "slug": "bind的实现"
-        }
-      ],
-      "lastUpdated": "2021/5/8 下午7:25:54"
-=======
           "level": 3,
           "title": "链式调用",
           "slug": "链式调用"
@@ -692,10 +647,29 @@ export const siteData = {
           "level": 2,
           "title": "generator原理",
           "slug": "generator原理"
+        },
+        {
+          "level": 3,
+          "title": "Generators 简单介绍",
+          "slug": "generators-简单介绍"
+        },
+        {
+          "level": 3,
+          "title": "Generators in C#",
+          "slug": "generators-in-c"
+        },
+        {
+          "level": 3,
+          "title": "Generators in JavaScript",
+          "slug": "generators-in-javascript"
+        },
+        {
+          "level": 3,
+          "title": "总结",
+          "slug": "总结-3"
         }
       ],
-      "lastUpdated": "2021/5/14 下午6:05:16"
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
+      "lastUpdated": "2021/5/21 下午10:28:01"
     }
   ],
   "themeConfig": {

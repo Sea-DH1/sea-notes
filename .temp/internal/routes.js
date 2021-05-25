@@ -4,20 +4,16 @@
 
 import { injectComponentOption, ensureAsyncComponentsLoaded } from '@app/util'
 import rootMixins from '@internal/root-mixins'
-import GlobalLayout from "D:\\myProject\\sea-notes\\node_modules\\@vuepress\\core\\lib\\client\\components\\GlobalLayout.vue"
+import GlobalLayout from "/Volumes/MacDocument/myProjects/sea-notes/node_modules/@vuepress/core/lib/client/components/GlobalLayout.vue"
 
 injectComponentOption(GlobalLayout, 'mixins', rootMixins)
 export const routes = [
   {
-<<<<<<< HEAD
     name: "v-3b60cb0b",
-    path: "/",
-=======
-    name: "v-7cf31b21",
     path: "/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-7cf31b21").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-3b60cb0b").then(next)
     },
   },
   {
@@ -25,20 +21,14 @@ export const routes = [
     redirect: "/"
   },
   {
-    name: "v-104af264",
-    path: "/Three.js/",
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
+    name: "v-fce5cc60",
+    path: "/Three.js/home.html",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-104af264").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-fce5cc60").then(next)
     },
   },
   {
-    path: "/Three.js/index.html",
-    redirect: "/Three.js/"
-  },
-  {
-<<<<<<< HEAD
     name: "v-a6d4e5ca",
     path: "/Three.js/",
     component: GlobalLayout,
@@ -49,51 +39,26 @@ export const routes = [
   {
     path: "/Three.js/index.html",
     redirect: "/Three.js/"
-=======
-    name: "v-61d8b18e",
+  },
+  {
+    name: "v-f6f3be6a",
     path: "/algorithm/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-61d8b18e").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-f6f3be6a").then(next)
     },
   },
   {
     path: "/algorithm/index.html",
     redirect: "/algorithm/"
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
   },
   {
-    name: "v-1f840632",
+    name: "v-d4b62460",
     path: "/view/home.html",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-1f840632").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
     },
-  },
-  {
-<<<<<<< HEAD
-    name: "v-f6f3be6a",
-    path: "/algorithm/",
-=======
-    name: "v-23bc3f32",
-    path: "/Three.js/home.html",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-23bc3f32").then(next)
-    },
-  },
-  {
-    name: "v-11d2e938",
-    path: "/view/",
->>>>>>> c309215cf9962cc0fb077bbcb92b37825f57dd9b
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-11d2e938").then(next)
-    },
-  },
-  {
-    path: "/view/index.html",
-    redirect: "/view/"
   },
   {
     name: "v-19dcde9b",
@@ -106,14 +71,6 @@ export const routes = [
   {
     path: "/view/index.html",
     redirect: "/view/"
-  },
-  {
-    name: "v-d4b62460",
-    path: "/view/home.html",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
-    },
   },
   {
     path: '*',

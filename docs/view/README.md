@@ -2826,17 +2826,17 @@ Promise 必须为以下三种状态之一：等待态（Pending）、执行态�
 先从 Promise 执行结果看一下，有如下一段代码：
 ```js
 new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve({ test: 1 })
-        resolve({ test: 2 })
-        reject({ test: 2 })
-    }, 1000)
+  setTimeout(() => {
+    resolve({ test: 1 })
+    resolve({ test: 2 })
+    reject({ test: 2 })
+  }, 1000)
 }).then((data) => {
-    console.log('result1', data)
+  console.log('result1', data)
 },(data1)=>{
-    console.log('result2',data1)
+  console.log('result2',data1)
 }).then((data) => {
-    console.log('result3', data)
+  console.log('result3', data)
 })
 //result1 { test: 1 }
 //result3 undefined
@@ -2851,54 +2851,54 @@ new Promise((resolve, reject) => {
 基于以上几点，我们先写个基于 PromiseA+ 规范的只含 resolve 方法的 Promise 模型:  
 ```js
 function Promise(fn){ 
-    let state = 'pending';
-    let value = null;
-    const callbacks = [];
+  let state = 'pending';
+  let value = null;
+  const callbacks = [];
 
-    this.then = function (onFulfilled){
-        return new Promise((resolve, reject)=>{
-            handle({ //桥梁，将新 Promise 的 resolve 方法，放到前一个 promise 的回调对象中
-                onFulfilled, 
-                resolve
-            })
-        })
-    }
+  this.then = function (onFulfilled){
+    return new Promise((resolve, reject)=>{
+      handle({ //桥梁，将新 Promise 的 resolve 方法，放到前一个 promise 的回调对象中
+        onFulfilled, 
+        resolve
+      })
+    })
+  }
 
-    function handle(callback){
-        if(state === 'pending'){
-            callbacks.push(callback)
-            return;
-        }
-        
-        if(state === 'fulfilled'){
-            if(!callback.onFulfilled){
-                callback.resolve(value)
-                return;
-            }
-            const ret = callback.onFulfilled(value) //处理回调
-            callback.resolve(ret) //处理下一个 promise 的resolve
-        }
-    }
-    function resolve(newValue){
-        const fn = ()=>{
-            if(state !== 'pending')return
-
-            state = 'fulfilled';
-            value = newValue
-            handelCb()
-        }
-        
-        setTimeout(fn,0) //基于 PromiseA+ 规范
+  function handle(callback){
+    if(state === 'pending'){
+      callbacks.push(callback)
+      return;
     }
     
-    function handelCb(){
-        while(callbacks.length) {
-            const fulfiledFn = callbacks.shift();
-            handle(fulfiledFn);
-        };
+    if(state === 'fulfilled'){
+      if(!callback.onFulfilled){
+        callback.resolve(value)
+        return;
+      }
+      const ret = callback.onFulfilled(value) //处理回调
+      callback.resolve(ret) //处理下一个 promise 的resolve
+    }
+  }
+  function resolve(newValue){
+    const fn = ()=>{
+      if(state !== 'pending')return
+
+      state = 'fulfilled';
+      value = newValue
+      handelCb()
     }
     
-    fn(resolve)
+    setTimeout(fn,0) //基于 PromiseA+ 规范
+  }
+  
+  function handelCb(){
+    while(callbacks.length) {
+      const fulfiledFn = callbacks.shift();
+      handle(fulfiledFn);
+    };
+  }
+  
+  fn(resolve)
 }
 ```  
 这个模型简单易懂，这里最关键的点就是在 then 中新创建的 Promise，它的状态变为 fulfilled 的节点是在上一个 Promise的回调执行完毕的时候。也就是说当一个 Promise 的状态被 fulfilled 之后，会执行其回调函数，而回调函数返回的结果会被当作 value，返回给下一个 Promise(也就是then 中产生的 Promise)，同时下一个 Promise的状态也会被改变(执行 resolve 或 reject)，然后再去执行其回调,以此类推下去...链式调用的效应就出来了。  
@@ -2906,13 +2906,13 @@ function Promise(fn){
 但是如果仅仅是例子中的情况，我们可以这样写：  
 ```js
 new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve({ test: 1 })
-    }, 1000)
+  setTimeout(() => {
+    resolve({ test: 1 })
+  }, 1000)
 }).then((data) => {
-    console.log('result1', data)
-    //dosomething
-    console.log('result3')
+  console.log('result1', data)
+  //dosomething
+  console.log('result3')
 })
 //result1 { test: 1 }
 //result3
@@ -2946,51 +2946,51 @@ function test(id) {
 用上面的 Promise 模型，得到的结果显然不是我们想要的。认真看上面的模型，执行 callback.resolve 时，传入的参数是 callback.onFulfilled 执行完成的返回，显然这个测试例子返回的就是一个 Promise，而我们的 Promise 模型中的 resolve 方法并没有特殊处理。那么我们将 resolve 改一下:  
 ```js
 function Promise(fn){ 
-    ...
-    function resolve(newValue){
-        const fn = ()=>{
-            if(state !== 'pending')return
+  ...
+  function resolve(newValue){
+    const fn = ()=>{
+      if(state !== 'pending')return
 
-            if(newValue && (typeof newValue === 'object' || typeof newValue === 'function')){
-                const {then} = newValue
-                if(typeof then === 'function'){
-                    // newValue 为新产生的 Promise,此时resolve为上个 promise 的resolve
-                    //相当于调用了新产生 Promise 的then方法，注入了上个 promise 的resolve 为其回调
-                    then.call(newValue,resolve)
-                    return
-                }
-            }
-            state = 'fulfilled';
-            value = newValue
-            handelCb()
+      if(newValue && (typeof newValue === 'object' || typeof newValue === 'function')){
+        const {then} = newValue
+        if(typeof then === 'function'){
+          // newValue 为新产生的 Promise,此时resolve为上个 promise 的resolve
+          //相当于调用了新产生 Promise 的then方法，注入了上个 promise 的resolve 为其回调
+          then.call(newValue,resolve)
+          return
         }
-        
-        setTimeout(fn,0)
+      }
+      state = 'fulfilled';
+      value = newValue
+      handelCb()
     }
-    ...
+    
+    setTimeout(fn,0)
+  }
+  ...
 }
 ```  
 
 用这个模型，再测试我们的例子，就得到了正确的结果：   
 ```js
 new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve({ test: 1 })
-    }, 1000)
+  setTimeout(() => {
+    resolve({ test: 1 })
+  }, 1000)
 }).then((data) => {
-    console.log('result1', data)
-    //dosomething
-    return test()
+  console.log('result1', data)
+  //dosomething
+  return test()
 }).then((data) => {
-    console.log('result2', data)
+  console.log('result2', data)
 })
 
 function test(id) {
-    return new Promise(((resolve, reject) => {
-        setTimeout(() => {
-        resolve({ test: 2 })
-        }, 5000)
-    }))
+  return new Promise(((resolve, reject) => {
+    setTimeout(() => {
+    resolve({ test: 2 })
+    }, 5000)
+  }))
 }
 //result1 { test: 1 }
 //result2 { test: 2 }
@@ -3025,75 +3025,74 @@ function Promise(fn){
   const callbacks = [];
 
   this.then = function (onFulfilled,onRejected){
-      return new Promise((resolve, reject)=>{
-          handle({
-              onFulfilled, 
-              onRejected,
-              resolve, 
-              reject
-          })
+    return new Promise((resolve, reject)=>{
+      handle({
+        onFulfilled, 
+        onRejected,
+        resolve, 
+        reject
       })
+    })
   }
 
   function handle(callback){
-      if(state === 'pending'){
-          callbacks.push(callback)
-          return;
-      }
-      
-      const cb = state === 'fulfilled' ? callback.onFulfilled:callback.onRejected;
-      const next = state === 'fulfilled'? callback.resolve:callback.reject;
+    if(state === 'pending'){
+      callbacks.push(callback)
+      return;
+    }
+    
+    const cb = state === 'fulfilled' ? callback.onFulfilled:callback.onRejected;
+    const next = state === 'fulfilled'? callback.resolve:callback.reject;
 
-      if(!cb){
-          next(value)
-          return;
-      }
-      const ret = cb(value)
-      next(ret)
+    if(!cb){
+      next(value)
+      return;
+    }
+    const ret = cb(value)
+    next(ret)
   }
   function resolve(newValue){
-      const fn = ()=>{
-          if(state !== 'pending')return
+    const fn = ()=>{
+      if(state !== 'pending')return
 
-          if(newValue && (typeof newValue === 'object' || typeof newValue === 'function')){
-              const {then} = newValue
-              if(typeof then === 'function'){
-                  // newValue 为新产生的 Promise,此时resolve为上个 promise 的resolve
-                  //相当于调用了新产生 Promise 的then方法，注入了上个 promise 的resolve 为其回调
-                  then.call(newValue,resolve, reject)
-                  return
-              }
-          }
-          state = 'fulfilled';
-          value = newValue
-          handelCb()
+      if(newValue && (typeof newValue === 'object' || typeof newValue === 'function')){
+        const {then} = newValue
+        if(typeof then === 'function'){
+          // newValue 为新产生的 Promise,此时resolve为上个 promise 的resolve
+          //相当于调用了新产生 Promise 的then方法，注入了上个 promise 的resolve 为其回调
+          then.call(newValue,resolve, reject)
+          return
+        }
       }
-      
-      setTimeout(fn,0)
+      state = 'fulfilled';
+      value = newValue
+      handelCb()
+    }
+    
+    setTimeout(fn,0)
   }
   function reject(error){
+    const fn = ()=>{
+      if(state !== 'pending')return
 
-      const fn = ()=>{
-          if(state !== 'pending')return
-
-          if(error && (typeof error === 'object' || typeof error === 'function')){
-              const {then} = error
-              if(typeof then === 'function'){
-                  then.call(error,resolve, reject)
-                  return
-              }
-          }
-          state = 'rejected';
-          value = error
-          handelCb()
+      if(error && (typeof error === 'object' || typeof error === 'function')){
+        const {then} = error
+        if(typeof then === 'function'){
+          then.call(error,resolve, reject)
+          return
+        }
       }
-      setTimeout(fn,0)
+      state = 'rejected';
+      value = error
+      handelCb()
+    }
+    setTimeout(fn,0)
   }
   function handelCb(){
-      while(callbacks.length) {
-          const fn = callbacks.shift();
-          handle(fn);
-      };
+    while(callbacks.length) {
+      const fn = callbacks.shift();
+      handle(fn);
+    };
   }
   fn(resolve, reject)
 }
@@ -3106,22 +3105,22 @@ handle代码改造如下：
 ```js
 function handle(callback){
   if(state === 'pending'){
-      callbacks.push(callback)
-      return;
+    callbacks.push(callback)
+    return;
   }
   
   const cb = state === 'fulfilled' ? callback.onFulfilled:callback.onRejected;
   const next = state === 'fulfilled'? callback.resolve:callback.reject;
 
   if(!cb){
-      next(value)
-      return;
+    next(value)
+    return;
   }
   try {
-      const ret = cb(value)
-      next(ret)
+    const ret = cb(value)
+    next(ret)
   } catch (e) {
-      callback.reject(e);
+    callback.reject(e);
   }  
 }
 ```  
@@ -3146,17 +3145,17 @@ new Promise((resolve, reject) => {
 function Promise(fn){ 
   ...
   this.then = function (onFulfilled,onRejected){
-      return new Promise((resolve, reject)=>{
-          handle({
-              onFulfilled, 
-              onRejected,
-              resolve, 
-              reject
-          })
+    return new Promise((resolve, reject)=>{
+      handle({
+        onFulfilled, 
+        onRejected,
+        resolve, 
+        reject
       })
+    })
   }
   this.catch = function (onError){
-      this.then(null,onError)
+    this.then(null,onError)
   }
   ...
 }
@@ -3168,10 +3167,10 @@ function Promise(fn){
 function Promise(fn){ 
   ...
   this.catch = function (onError){
-      this.then(null,onError)
+    this.then(null,onError)
   }
   this.finally = function (onDone){
-      this.then(onDone,onDone)
+    this.then(onDone,onDone)
   }
   ...
 }
@@ -3457,7 +3456,307 @@ function Promise(fn) {
 
 ***
 
-## generator原理
+## generator原理  
+随着 JavaScript 语言的发展，ES6 规范为我们带来了许多新的内容，其中生成器 Generators 是一项重要的特性。利用这一特性，可以简化迭代器的创建，更加令人兴奋的，是 Generators允许在函数执行过程中暂停、并在将来某一时刻恢复执行。这一特性改变了以往的函数必须执行完成才返回的特点，将这一特性应用到异步代码编写中，可以有效的简化异步方法的写法，同时避免陷入回调地狱。  
+
+这里将对 Generators 进行简单介绍，然后结合笔者在 C# 上的一点经验，重点探讨 Generators 运行机制及在 ES5 的实现原理。  
+
+### Generators 简单介绍  
+一个简单的 Generators 函数示例  
+```js
+function* example() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+var iter = example();
+iter.next(); // {value: 1, done: false}
+iter.next(); // {value: 2, done: false}
+iter.next(); // {value: 3, done: false}
+iter.next(); // {value: undefined, done: true}
+```  
+
+上述代码中定义了一个生成函数，当调用生成器函数 `example()` 时，并非立即执行该函数，而是返回一个生成器对象。每当调用生成器对象的.next()方法时，函数将运行到下一个`yield`表达式，返回表达式结果并暂停自身。当抵达生成器的末尾时，返回结果中`done`的值为`true`，`value`的值为`undefined`。将上述`example()`函数称之为生成器函数，与普通函数相比二者有如下区别：  
+* 普通函数使用`function`声明，生成器函数用`function*`声明
+* 普通函数使用`return`返回值，生成器函数使用`yield`返回值
+* 普通函数是`run to completion`模式，即普通函数开始执行后，会一直执行到该函数所有语句完成，在此期间别的代码语句是不会被执行的；生成器函数是`run-pause-run`模式，即生成器函数可以在函数运行中被暂停一次或多次，并且在后面再恢复执行，在暂停期间允许其他代码语句被执行  
+
+对于`Generators`的使用，将不再多做介绍，如需了解更多内容推荐阅读下面系列文章，[《ES6 Generators: Complete Series》](https://davidwalsh.name/es6-generators)或者[《深入掌握ECMAScript 6 异步编程》](http://www.ruanyifeng.com/blog/2015/04/generator.html)系列文章  
+
+### Generators in C#  
+生成器不是一个新的概念，我最初接触是在学习使用C#时。C#从2.0版本便引入了`yield`关键字，使得我们可以更简单的创建枚举数和可以枚举类型。不同的是C#中未将其命名为生成器 Generators，而将其称之为迭代器。  
+
+本文不会介绍 C#中可枚举类 IEnumerable 和枚举数 IEnumerator 内容，如需了解推荐阅读《C#4.0 图解教程》相关章节。  
+
+#### C#迭代器介绍  
+先看一个示例，下面方法声明实现了一个产生和返回枚举数的迭代器  
+```C#
+public IEnumerable <int> Example()
+{
+  yield return 1;
+  yield return 2;
+  yield return 3;
+}
+```  
+方法定义与 ES6 Generators 定义很接近，定义中声明返回了一个 int 类型的泛型可枚举类型，方法体内通过yield return 语句返回值并将自身暂停执行。  
+
+使用迭代器来创建可枚举类型的类  
+```C#
+class YieldClass
+{
+  public IEnumerable<int> Example() // 迭代器
+  {
+    yield return 1;
+    yield return 2;
+    yield return 3;
+  }
+}
+class Program
+{
+  static void Main()
+  {
+    YieldClass yc = new YieldClass();
+    foreach(var a in yc.Example())
+      Console.WriteLine(a);
+  }
+}
+```  
+上述代码会产生如下输入  
+```
+1
+2
+3
+```  
+#### C#迭代器原理  
+在.Net中，yield 并不是.Net runtime 的特性，而是一个语法糖，代码编译时，这一语法糖会被C#编译器编译成简单的IL代码。  
+
+继续研究上述示例，通过Reflector反编译工具可以看到，编译器为我们生成了一个带有如下声明的内部类  
+```C#
+[CompilerGenerated]
+private sealed class YieldEnumerator:
+  IEnumerable<object>, IEnumerator<object>
+{
+  // Fields字段
+  private int state;
+  private int current;
+  public YieldClass owner;
+  private int initialThreadId;
+
+  // Methods方法
+  [DebuggerHidden]
+  public YieldEnumerator(int state);
+  private bool MoveNext();
+  [DebuggerHidden]
+  IEnumerator<int> IEnumerable<int>.GetEnumerator();
+  [DebuggerHidden]
+  IEnumerator IEnumerable.GetEnumerator();
+  [DebuggerHidden]
+  void IEnumerator.Reset();
+  void IDisposable.Dispose();
+
+  // Properties属性
+  object IEnumerator<object>.Current
+  { [DebuggerHidden] get; }
+
+  object IEnumerator.Curent
+  { [DebuggerHidden] get; }
+}
+```  
+
+原始的`Example()`方法仅返回一个`YieldEnumerator`的实例，并将初始状态-2传递给它自身和其引用者，每一个迭代器保存一个状态指示
+* -2：初始化为可迭代类Enumerable
+* -1：迭代结束
+* 0：初始化为迭代器 Enumerator
+* 1-n：原始 Example() 方法中的 yield return 索引值
+
+Example()方法中代码被转换为 YieldingEnumerator.MoveNext()，在我们的示例中转换后代码如下  
+```C#
+bool MoveNext()
+{
+  switch (state)
+  {
+    case 0:
+      state = -1;
+      current = 1;
+      state = 1;
+      return true;
+    case 1:
+      state = -1;
+      current = 2;
+      state = 2
+      return true;
+    case 2:
+      state = -1;
+      current = 3
+      state = 3;
+      return true;
+    case 3:
+      state = -1;
+      break;
+  }
+  return false;
+}
+```  
+利用上述的代码转换，编译器为我们生成了一个状态机，正是基于这一状态机模型，实现了`yield`关键字的特性。
+
+迭代器状态机模型可如下图所示：  
+![generator原理](../images/view/generator1.png)  
+
+* Before为迭代器初始状态
+* Running为调用MoveNext后进入这个状态。在这个状态，枚举数检测并设置下一项的位置。遇到yield return、yield break 或者迭代结束时，退出该状态
+* Suspended为状态机等待下次调用 MoveNext 的状态
+* After为迭代结束的状态
+
+### Generators in JavaScript
+通过阅读上文，我们了解了Generator在C#中的使用，并且通过查看编译器生成的IL代码，得知编译器会生成一个内部类来保存上下文信息，然后将yield return 表达式转换成switch case，通过状态机模式实现yield关键字的特性。  
+
+#### JavaScript Generators 原理浅析  
+yield 关键字在 JavaScript 中如何实现呢？  
+
+首先，生成器不是线程。支线程的语言中，多段不同的代码可以在同一时候运行，这经常会导致资源竞争，使用得当会有不错的提升。生成器则完全不同，JavaScript 执行引擎仍然是一个基于事件循环的单线程环境，当生成器运行的时候，它会在叫做 caller的同一个线程中运行。执行的顺序是有序、确定的，并且永远不会产生并发。不同于系统的线程，生成器只会在其内部用到的yield的时候才会被挂起。  
+
+既然生成器并非由引擎从底层提供额外的支持，我们可以沿用上文在C#中对 yield 特性的原理探究的经验，将生成器视为一个语法糖，用一个辅助工具将生成器函数转换为普通的 JavaScript 代码，在经过转换的代码中，有两个关键点，一是要保存函数的上下文信息，二是实现一个完善的迭代方法，使得多个 yield 表达式按序执行，从而实现生成器的特性。  
+
+#### How Generators work in ES5  
+`Regenerator`工具已经实现了上述思路，借助 Regenerator 工具，我们已经可以在原生ES5中使用生成器函数，本节我们来分析 Regeneraor 实现方式以深入理解 Generators 运行原理。  
+
+通过[这个在线地址](https://babeljs.io/repl/)可以方便的查看经过转换后的代码，仍然以文章初始为例：  
+```js
+function* example() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+var iter = example();
+iter.next();
+```  
+
+经过转换后为： 
+```js
+var marked0$0 = [example].map(regeneratorRuntime.mark);
+function example() {
+  return regeneratorRuntime.wrap(function example$(context$1$0) {
+    while (1) switch (context$1$0.prev = context$1$0.next) {
+      case 0:
+        context$1$0.next = 2;
+        return 1;
+ 
+      case 2:
+        context$1$0.next = 4;
+        return 2;
+ 
+      case 4:
+        context$1$0.next = 6;
+        return 3;
+ 
+      case 6:
+      case "end":
+        return context$1$0.stop();
+    }
+  }, marked0$0[0], this);
+}
+var iter = example();
+iter.next();
+```  
+从转换后的代码中可以看，与C#编译以 yield return 表式的转换相似，Rengenerarpt 将生成器函数中的 yield 表式工重写为`switch case，同时，在每个case中使用comtext $1$0来保存函数当前的上下文状态。  
+
+switch case之外，迭代器函数example被regeneratorRuntime.mark包装，返回一个regeneratorRuntime.wrap包装的迭代器对象。  
+```js
+runtime.mark = function(genFun) {
+  if (Object.setPrototypeOf) {
+    Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+  } else {
+    genFun.__proto__ = GeneratorFunctionPrototype;
+  }
+  genFun.prototype = Object.create(Gp);
+  return genFun;
+}
+```  
+
+通过mark包装，将example包装成如下对象
+![generator原理](../images/view/generator2.png)  
+当调用生成器函数example()时，返回一个被wrap函数包装后的迭代器对象  
+```js
+runtime.wrap = function (innerFn, outerFn, self, tryLocsList) {
+  // If outerFn provided, then outerFn.prototype instanceof Generator.
+  var generator = Object.create((outerFn || Generator).prototype);
+  var context = new Context(tryLocsList || []);
+
+  // The ._invoke method unifies the implementations of the .next,
+  // .throw, and .return methods.
+  generator ._invoke = makeInvokeMethod(innerFn, self, context);
+
+  return generator;
+}
+```  
+返回的迭代器对象如下所示：  
+![generator原理](../images/view/generator3.png)  
+
+当调用迭代器对象iter.next()方法时，因为有如下代码，所以会执行_invoke方法，而根据前面 wrap 方法代码可知，最终是调用了迭代器对象的makeInvokeMethid(innerFn, self, context); 方法  
+```js
+function defineIteratorMethods(prototype) {
+  ['next', 'thorw', 'return'].forEach(function(method) {
+    prototype[method] = function (arg) {
+      return this._invoke(method, arg);
+    }
+  })
+}
+```  
+
+makeInvokeMethod 方法内容较多，这里选取部分分析。首先，我们发现生成器将自身状态初始化为"Suspended Start"  
+```js
+function makeInvokeMethod(innerFn, self, context) {
+  var state = GenStateSuspendedStart;
+
+  return function invoke(method, arg)
+}
+```  
+
+makeInvokeMethod 返回 invoke 函数，当我们执行.next方法时，实际调用的是 invoke 方法中的下面语句  
+```js
+var record = tryCatch(innerFn, self, context);
+```  
+
+这里 tryCatch 方法中 fn 为经过转换后的 example$ 方法，arg为上下文对象context，因为 invoke 函数内部对 context 的引用形成闭包引用，所以 context 上下文得以在迭代期间一直保持。  
+```js
+function tryCatch(fn, obj, arg) {
+  try {
+    return { type: 'normal', arg: fn.call(obj, arg) }
+  } catch (err) {
+    return { type: 'throw', arg: err }
+  }
+}
+```  
+
+tryCatch 方法会实际调用 example$ 方法，进入转换后的switch case, 执行代码逻辑。如果得到的结果是一个普通类型的值，我们将它包装成一个可迭代对象格式，并且更新生成器状态到 GenStateCompleted 或者 GenStateSuspendedYield  
+```js
+var record = tryCatch(innerFn, self, context);
+// If an exception is thrown from innerFn, we leave state 
+===
+// GenStateExecuting and loop back for another invocation.
+  if (record.type === 'normal') {
+    state = context.done ? GenStateCompleted : GenStateSuspendedYield;
+
+  var info = {
+    value: record.arg,
+    done: context.done
+  };
+  }
+```  
+
+### 总结  
+通过对 Regenerator 转换后的生成器代码及工具源码分析，我们探究了生成器的运行原理。Regenerator 通过工具函数将生成器函数包装，为其添加如 next/return 等方法。同时也对返回的生成器对象进行包装，使得对 next 等方法的调用，最终进入由 switch case 组成的状态机模型中。除此之外，利用闭包技巧，保存生成器函数上下文信息。  
+
+上述过程与 C# 中 yield 关键字的实现原理基本一致，都采用了编译转换思路，运用状态机模型，同时保存函数上下文信息，最终实现了新的 yield 关键字带来的新的语言特性。  
+
+#### 参考文章
+1. [ES6 Generators:Complete Series 系列文章](https://davidwalsh.name/es6-generators)
+2. [深入浅出 ES6 Generators](https://www.infoq.cn/article/es6-in-depth-generators/)
+3. [《深入掌握 ECMAScript 6 异步编程》系列文章](http://www.ruanyifeng.com/blog/2015/04/generator.html)
+4. [ES6 Generators:How do they work?](https://x-team.com/blog/generators-work/)
+5. [Behind the scenes of the C# yield keyword](https://startbigthinksmall.wordpress.com/2008/06/09/behind-the-scenes-of-the-c-yield-keyword/)
 
 
 ***
