@@ -33,14 +33,6 @@ export const siteData = {
       "lastUpdated": "2021/5/6 下午5:45:33"
     },
     {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-fce5cc60",
-      "path": "/Three.js/home.html"
-    },
-    {
       "title": "Three.js",
       "frontmatter": {
         "sidebar": "auto"
@@ -104,6 +96,14 @@ export const siteData = {
         }
       ],
       "lastUpdated": "2021/5/6 下午5:45:33"
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-fce5cc60",
+      "path": "/Three.js/home.html"
     },
     {
       "title": "bind的实现",
@@ -669,7 +669,7 @@ export const siteData = {
           "slug": "总结-3"
         }
       ],
-      "lastUpdated": "2021/5/21 下午10:28:01"
+      "lastUpdated": "2021/5/25 下午2:24:30"
     }
   ],
   "themeConfig": {
