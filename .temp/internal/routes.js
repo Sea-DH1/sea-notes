@@ -4,16 +4,16 @@
 
 import { injectComponentOption, ensureAsyncComponentsLoaded } from '@app/util'
 import rootMixins from '@internal/root-mixins'
-import GlobalLayout from "/Volumes/MacDocument/myProjects/sea-notes/node_modules/@vuepress/core/lib/client/components/GlobalLayout.vue"
+import GlobalLayout from "D:\\myProject\\sea-notes\\node_modules\\@vuepress\\core\\lib\\client\\components\\GlobalLayout.vue"
 
 injectComponentOption(GlobalLayout, 'mixins', rootMixins)
 export const routes = [
   {
-    name: "v-3b60cb0b",
+    name: "v-7cf31b21",
     path: "/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-3b60cb0b").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-7cf31b21").then(next)
     },
   },
   {
@@ -21,11 +21,11 @@ export const routes = [
     redirect: "/"
   },
   {
-    name: "v-a6d4e5ca",
+    name: "v-104af264",
     path: "/Three.js/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-a6d4e5ca").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-104af264").then(next)
     },
   },
   {
@@ -33,11 +33,19 @@ export const routes = [
     redirect: "/Three.js/"
   },
   {
-    name: "v-f6f3be6a",
+    name: "v-23bc3f32",
+    path: "/Three.js/home.html",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-23bc3f32").then(next)
+    },
+  },
+  {
+    name: "v-61d8b18e",
     path: "/algorithm/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-f6f3be6a").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-61d8b18e").then(next)
     },
   },
   {
@@ -45,32 +53,24 @@ export const routes = [
     redirect: "/algorithm/"
   },
   {
-    name: "v-fce5cc60",
-    path: "/Three.js/home.html",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-fce5cc60").then(next)
-    },
-  },
-  {
-    name: "v-d4b62460",
-    path: "/view/home.html",
-    component: GlobalLayout,
-    beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-d4b62460").then(next)
-    },
-  },
-  {
-    name: "v-19dcde9b",
+    name: "v-11d2e938",
     path: "/view/",
     component: GlobalLayout,
     beforeEnter: (to, from, next) => {
-      ensureAsyncComponentsLoaded("Layout", "v-19dcde9b").then(next)
+      ensureAsyncComponentsLoaded("Layout", "v-11d2e938").then(next)
     },
   },
   {
     path: "/view/index.html",
     redirect: "/view/"
+  },
+  {
+    name: "v-1f840632",
+    path: "/view/home.html",
+    component: GlobalLayout,
+    beforeEnter: (to, from, next) => {
+      ensureAsyncComponentsLoaded("Layout", "v-1f840632").then(next)
+    },
   },
   {
     path: '*',
