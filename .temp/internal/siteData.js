@@ -30,7 +30,15 @@ export const siteData = {
       "relativePath": "README.md",
       "key": "v-7cf31b21",
       "path": "/",
-      "lastUpdated": "2021/5/6 下午5:45:33"
+      "lastUpdated": "2021/5/6 17:45:33"
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-23bc3f32",
+      "path": "/Three.js/home.html"
     },
     {
       "title": "Three.js",
@@ -44,23 +52,75 @@ export const siteData = {
       "headers": [
         {
           "level": 2,
-          "title": "什么是web三维",
-          "slug": "什么是web三维"
+          "title": "什么是 web 三维",
+          "slug": "什么是-web-三维"
         },
         {
           "level": 2,
           "title": "基本组成",
           "slug": "基本组成"
+        },
+        {
+          "level": 2,
+          "title": "图元",
+          "slug": "图元"
+        },
+        {
+          "level": 3,
+          "title": "BoxGeometry 盒子",
+          "slug": "boxgeometry-盒子"
+        },
+        {
+          "level": 3,
+          "title": "CircleGeometry 平面圆",
+          "slug": "circlegeometry-平面圆"
+        },
+        {
+          "level": 2,
+          "title": "场景",
+          "slug": "场景"
+        },
+        {
+          "level": 2,
+          "title": "材质",
+          "slug": "材质"
+        },
+        {
+          "level": 2,
+          "title": "纹理",
+          "slug": "纹理"
+        },
+        {
+          "level": 2,
+          "title": "光照",
+          "slug": "光照"
+        },
+        {
+          "level": 2,
+          "title": "摄像机",
+          "slug": "摄像机"
+        },
+        {
+          "level": 2,
+          "title": "阴影",
+          "slug": "阴影"
+        },
+        {
+          "level": 2,
+          "title": "雾",
+          "slug": "雾"
+        },
+        {
+          "level": 2,
+          "title": "渲染目标",
+          "slug": "渲染目标"
+        },
+        {
+          "level": 2,
+          "title": "自定义缓冲几何体",
+          "slug": "自定义缓冲几何体"
         }
       ]
-    },
-    {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-23bc3f32",
-      "path": "/Three.js/home.html"
     },
     {
       "title": "JavaScript数据结构与算法",
@@ -103,10 +163,28 @@ export const siteData = {
           "slug": "_2、异步队列"
         }
       ],
-      "lastUpdated": "2021/5/6 下午5:45:33"
+      "lastUpdated": "2021/5/6 17:45:33"
     },
     {
-      "title": "JavaScript基础知识",
+      "title": "bind的实现",
+      "frontmatter": {
+        "sidebarDepth": 2
+      },
+      "regularPath": "/view/home.html",
+      "relativePath": "view/home.md",
+      "key": "v-1f840632",
+      "path": "/view/home.html",
+      "headers": [
+        {
+          "level": 3,
+          "title": "bind的实现",
+          "slug": "bind的实现"
+        }
+      ],
+      "lastUpdated": "2021/5/8 19:25:54"
+    },
+    {
+      "title": "JavaScript 基础知识",
       "frontmatter": {
         "sidebar": "auto"
       },
@@ -117,13 +195,13 @@ export const siteData = {
       "headers": [
         {
           "level": 2,
-          "title": "bind的实现",
-          "slug": "bind的实现"
+          "title": "bind 的实现",
+          "slug": "bind-的实现"
         },
         {
           "level": 3,
-          "title": "bind是什么？",
-          "slug": "bind是什么"
+          "title": "bind 是什么？",
+          "slug": "bind-是什么"
         },
         {
           "level": 3,
@@ -157,13 +235,13 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "new操作符的原理和实现",
-          "slug": "new操作符的原理和实现"
+          "title": "new 操作符的原理和实现",
+          "slug": "new-操作符的原理和实现"
         },
         {
           "level": 3,
-          "title": "new是什么？",
-          "slug": "new是什么"
+          "title": "new 是什么？",
+          "slug": "new-是什么"
         },
         {
           "level": 3,
@@ -177,13 +255,13 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "apply和call",
-          "slug": "apply和call"
+          "title": "apply 和 call",
+          "slug": "apply-和-call"
         },
         {
           "level": 3,
-          "title": "call是什么？",
-          "slug": "call是什么"
+          "title": "call 是什么？",
+          "slug": "call-是什么"
         },
         {
           "level": 3,
@@ -202,8 +280,8 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "apply的模拟实现",
-          "slug": "apply的模拟实现"
+          "title": "apply 的模拟实现",
+          "slug": "apply-的模拟实现"
         },
         {
           "level": 2,
@@ -332,8 +410,8 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "this的指向",
-          "slug": "this的指向"
+          "title": "this 的指向",
+          "slug": "this-的指向"
         },
         {
           "level": 3,
@@ -357,8 +435,8 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "如何确定this的值",
-          "slug": "如何确定this的值"
+          "title": "如何确定 this 的值",
+          "slug": "如何确定-this-的值"
         },
         {
           "level": 3,
@@ -427,18 +505,18 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "typeof和instanceof",
-          "slug": "typeof和instanceof"
+          "title": "typeof 和 instanceof",
+          "slug": "typeof-和-instanceof"
         },
         {
           "level": 3,
-          "title": "JavaScript数据类型",
-          "slug": "javascript数据类型"
+          "title": "JavaScript 数据类型",
+          "slug": "javascript-数据类型"
         },
         {
           "level": 3,
-          "title": "typeof原理",
-          "slug": "typeof原理"
+          "title": "typeof 原理",
+          "slug": "typeof-原理"
         },
         {
           "level": 3,
@@ -447,8 +525,8 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "JavaScrtip原型链",
-          "slug": "javascrtip原型链"
+          "title": "JavaScrtip 原型链",
+          "slug": "javascrtip-原型链"
         },
         {
           "level": 3,
@@ -502,8 +580,8 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "v8垃圾回收机制",
-          "slug": "v8垃圾回收机制"
+          "title": "v8 垃圾回收机制",
+          "slug": "v8-垃圾回收机制"
         },
         {
           "level": 2,
@@ -557,8 +635,8 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "node环境下的事件循环机制",
-          "slug": "node环境下的事件循环机制"
+          "title": "node 环境下的事件循环机制",
+          "slug": "node-环境下的事件循环机制"
         },
         {
           "level": 3,
@@ -567,8 +645,8 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "Promise原理",
-          "slug": "promise原理"
+          "title": "Promise 原理",
+          "slug": "promise-原理"
         },
         {
           "level": 3,
@@ -587,8 +665,8 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "Finally方法",
-          "slug": "finally方法"
+          "title": "Finally 方法",
+          "slug": "finally-方法"
         },
         {
           "level": 3,
@@ -627,8 +705,8 @@ export const siteData = {
         },
         {
           "level": 2,
-          "title": "generator原理",
-          "slug": "generator原理"
+          "title": "generator 原理",
+          "slug": "generator-原理"
         },
         {
           "level": 3,
@@ -637,7 +715,7 @@ export const siteData = {
         },
         {
           "level": 3,
-          "title": "Generators in C#",
+          "title": "Generators in C",
           "slug": "generators-in-c"
         },
         {
@@ -651,25 +729,7 @@ export const siteData = {
           "slug": "总结-3"
         }
       ],
-      "lastUpdated": "2021/5/25 下午2:24:30"
-    },
-    {
-      "title": "bind的实现",
-      "frontmatter": {
-        "sidebarDepth": 2
-      },
-      "regularPath": "/view/home.html",
-      "relativePath": "view/home.md",
-      "key": "v-1f840632",
-      "path": "/view/home.html",
-      "headers": [
-        {
-          "level": 3,
-          "title": "bind的实现",
-          "slug": "bind的实现"
-        }
-      ],
-      "lastUpdated": "2021/5/8 下午7:25:54"
+      "lastUpdated": "2021/5/25 14:24:30"
     }
   ],
   "themeConfig": {
