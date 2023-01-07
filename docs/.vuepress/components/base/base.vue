@@ -42,9 +42,9 @@ export default {
     },
 
     render() {
-      if (this.cube) {
-        this.cube.rotation.x += 0.005
-        this.cube.rotation.y += 0.005
+      if (this.mesh) {
+        this.mesh.rotation.x += 0.005
+        this.mesh.rotation.y += 0.005
       }
 
       this.controls.update()

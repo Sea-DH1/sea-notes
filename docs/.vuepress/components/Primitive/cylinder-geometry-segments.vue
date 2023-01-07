@@ -1,6 +1,6 @@
 <script>
 import Base from '../base/base.vue'
-import { initConeGeometry } from '../../utils/primitive'
+import { initCylinderGeometry } from '../../utils/primitive'
 
 export default {
   extends: Base,
@@ -14,12 +14,17 @@ export default {
     init() {
       this.camera.position.set(0, 0, 20)
       const options = {
-        radius: 6,
-        height: 8,
-        radialSegments: 16
+        radiusTop: 4,
+          radiusBottom: 4,
+          height: 8,
+          radialSegments: 12,
+          heightSegments: 2,
+          openEnded: false,
+          thetaStart: Math.PI * 0.25,
+          thetaLength: Math.PI * 1.5
       }
 
-      this.mesh = initConeGeometry(options)
+      this.mesh = initCylinderGeometry(options)
       this.scene.add(this.mesh)
     }
   }

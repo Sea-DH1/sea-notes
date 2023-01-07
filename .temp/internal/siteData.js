@@ -33,14 +33,6 @@ export const siteData = {
       "lastUpdated": "2021/5/6 17:45:33"
     },
     {
-      "title": "WebGL",
-      "frontmatter": {},
-      "regularPath": "/Three.js/home.html",
-      "relativePath": "Three.js/home.md",
-      "key": "v-23bc3f32",
-      "path": "/Three.js/home.html"
-    },
-    {
       "title": "Three.js",
       "frontmatter": {
         "sidebar": "auto"
@@ -74,6 +66,41 @@ export const siteData = {
           "level": 3,
           "title": "CircleGeometry 平面圆",
           "slug": "circlegeometry-平面圆"
+        },
+        {
+          "level": 3,
+          "title": "ConeGeometry 锥形",
+          "slug": "conegeometry-锥形"
+        },
+        {
+          "level": 3,
+          "title": "CylinderGeometry 圆柱",
+          "slug": "cylindergeometry-圆柱"
+        },
+        {
+          "level": 3,
+          "title": "DodecahedronGeometry 十二面体",
+          "slug": "dodecahedrongeometry-十二面体"
+        },
+        {
+          "level": 3,
+          "title": "ExtrudeGeometry 挤出几何体",
+          "slug": "extrudegeometry-挤出几何体"
+        },
+        {
+          "level": 3,
+          "title": "IcosahedronGeometry 二十面体",
+          "slug": "icosahedrongeometry-二十面体"
+        },
+        {
+          "level": 3,
+          "title": "LatheGeometry 车床几何",
+          "slug": "lathegeometry-车床几何"
+        },
+        {
+          "level": 3,
+          "title": "OctahedronGeometry 八面体",
+          "slug": "octahedrongeometry-八面体"
         },
         {
           "level": 2,
@@ -121,6 +148,14 @@ export const siteData = {
           "slug": "自定义缓冲几何体"
         }
       ]
+    },
+    {
+      "title": "WebGL",
+      "frontmatter": {},
+      "regularPath": "/Three.js/home.html",
+      "relativePath": "Three.js/home.md",
+      "key": "v-23bc3f32",
+      "path": "/Three.js/home.html"
     },
     {
       "title": "JavaScript数据结构与算法",
@@ -729,7 +764,7 @@ export const siteData = {
           "slug": "总结-3"
         }
       ],
-      "lastUpdated": "2021/5/25 14:24:30"
+      "lastUpdated": "2023/1/2 04:51:28"
     }
   ],
   "themeConfig": {

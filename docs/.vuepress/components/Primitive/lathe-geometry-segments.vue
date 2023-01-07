@@ -1,6 +1,7 @@
 <script>
+import * as THREE from 'three'
 import Base from '../base/base.vue'
-import { initConeGeometry } from '../../utils/primitive'
+import { initLatheGeometry } from '../../utils/primitive'
 
 export default {
   extends: Base,
@@ -13,13 +14,19 @@ export default {
   methods: {
     init() {
       this.camera.position.set(0, 0, 20)
-      const options = {
-        radius: 6,
-        height: 8,
-        radialSegments: 16
+      const points = []
+      for (let i = 0; i < 10; ++i) {
+        points.push(new THREE.Vector2(Math.sin(i * 0.2) * 3 + 3, (i - 5) * 0.8))
       }
 
-      this.mesh = initConeGeometry(options)
+      const options = {
+        points,
+        segments: 12,
+        phiStart: Math.PI * 0.25,
+        phiLength: Math.PI * 1.5
+      }
+
+      this.mesh = initLatheGeometry(options)
       this.scene.add(this.mesh)
     }
   }

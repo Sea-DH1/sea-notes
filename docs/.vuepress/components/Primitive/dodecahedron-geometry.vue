@@ -1,6 +1,6 @@
 <script>
 import Base from '../base/base.vue'
-import { initBoxGeometry } from '../../utils/primitive'
+import { initDodecahedronGeometry } from '../../utils/primitive'
 
 export default {
   extends: Base,
@@ -12,16 +12,12 @@ export default {
   },
   methods: {
     init() {
+      this.camera.position.set(0, 0, 20)
       const options = {
-        width: 8,
-        height: 8,
-        depth: 8,
-        widthSegments: 1,
-        heightSegments: 1,
-        depthSegments: 1
+        radius: 7
       }
 
-      this.mesh = initBoxGeometry(options)
+      this.mesh = initDodecahedronGeometry(options)
       this.scene.add(this.mesh)
     }
   }

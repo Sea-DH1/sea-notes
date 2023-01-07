@@ -21,8 +21,8 @@ export default {
         depthSegments: 4
       }
 
-      this.cube = initBoxGeometry(options)
-      this.scene.add(this.cube)
+      this.mesh = initBoxGeometry(options)
+      this.scene.add(this.mesh)
     }
   }
 }

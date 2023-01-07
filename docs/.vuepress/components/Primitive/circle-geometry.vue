@@ -20,8 +20,8 @@ export default {
         thetaStart: 0,
         thetaLength: twoPi
       }
-      this.cube = initCircleGeometry(options)
-      this.scene.add(this.cube)
+      this.mesh = initCircleGeometry(options)
+      this.scene.add(this.mesh)
     }
   }
 }

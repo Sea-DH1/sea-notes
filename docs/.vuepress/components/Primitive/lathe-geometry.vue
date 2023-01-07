@@ -1,6 +1,7 @@
 <script>
+import * as THREE from 'three'
 import Base from '../base/base.vue'
-import { initBoxGeometry } from '../../utils/primitive'
+import { initLatheGeometry } from '../../utils/primitive'
 
 export default {
   extends: Base,
@@ -12,16 +13,17 @@ export default {
   },
   methods: {
     init() {
-      const options = {
-        width: 8,
-        height: 8,
-        depth: 8,
-        widthSegments: 1,
-        heightSegments: 1,
-        depthSegments: 1
+      this.camera.position.set(0, 0, 20)
+      const points = []
+      for (let i = 0; i < 10; ++i) {
+        points.push(new THREE.Vector2(Math.sin(i * 0.2) * 3 + 3, (i - 5) * 0.8))
       }
 
-      this.mesh = initBoxGeometry(options)
+      const options = {
+        points
+      }
+
+      this.mesh = initLatheGeometry(options)
       this.scene.add(this.mesh)
     }
   }

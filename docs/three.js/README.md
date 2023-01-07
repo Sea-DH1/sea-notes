@@ -174,7 +174,7 @@ function render(time) {
 requestAnimationFrame(render);
 ```
 
-<Basic-test-1/>
+<Basic-test-1 />
 
 效果好了一些但还是很难看出是三维的。我们来添加些光照效果，应该会有点帮助。three.js中有很多种类型的灯光，我们将在后期文章中详细讨论。现在我们先创建一盏平行光。
 
@@ -199,7 +199,7 @@ const material = new THREE.MeshPhongMaterial({color: 0x44aa88});
 这是我们新的项目结构
 ![新结构图](../images/threeJs/threejs-1cube-with-directionallight.svg)  
 新的效果：  
-<Basic-test-2/>
+<Basic-test-2 />
 
 现在应该可以很清楚的看出是三维立方体了。  
 
@@ -254,7 +254,7 @@ function render(time) {
 ```
 
 最终效果：  
-<Basic-test-3/>
+<Basic-test-3 />
 
 如果你对比上面的示意图可以看到此效果符合我们的预想。位置为X = -2 和 X = +2的立方体有一部分在我们的视椎体外面。他们大部分是被包裹的，因为水平方向的视角非常大。
 
@@ -273,7 +273,9 @@ Three.js 有很多图元。图元就是一些 3D 的形状，在运行时根据�
 
 ### BoxGeometry 盒子  
 
-<Primitive-box-geometry/>
+[THREE.BoxGeometry](https://threejs.org/docs/index.html#api/en/geometries/BoxGeometry)
+
+<Primitive-box-geometry />
 
 ```js
 const width = 8;  // ui: width
@@ -282,7 +284,7 @@ const depth = 8;  // ui: depth
 const geometry = new THREE.BoxGeometry(width, height, depth);
 ```
 
-<Primitive-box-geometry-segments/>
+<Primitive-box-geometry-segments />
 
 ```js
 const width = 8;  // ui: width
@@ -295,6 +297,8 @@ const geometry = new THREE.BoxGeometry(width, height, depth, widthSegments, heig
 ```
 
 ### CircleGeometry 平面圆  
+
+[THREE.CircleGeometry](https://threejs.org/docs/index.html#api/en/geometries/CircleGeometry)
 
 <Primitive-circle-geometry />
 
@@ -316,7 +320,202 @@ const geometry = new THREE.CircleGeometry(radius, segments, thetaStart, thetaLen
 
 ### ConeGeometry 锥形
 
+[THREE.ConeGeometry](https://threejs.org/docs/index.html#api/en/geometries/ConeGeometry)
+
 <Primitive-cone-geometry />
+```js
+const radius = 6;  // ui: radius
+const height = 8;  // ui: height
+const radialSegments = 16;  // ui: radialSegments
+const geometry = new THREE.ConeGeometry(radius, height, radialSegments);
+```
+
+<Primitive-cone-geometry-segments />
+```js
+const radius = 6;  // ui: radius
+const height = 8;  // ui: height
+const radialSegments = 16;  // ui: radialSegments
+const heightSegments = 2;  // ui: heightSegments
+const openEnded = true;  // ui: openEnded
+const thetaStart = Math.PI *0.25;  // ui: thetaStart
+const thetaLength = Math.PI* 1.5;  // ui: thetaLength
+const geometry = new THREE.ConeGeometry(radius, height, radialSegments, heightSegments,openEnded, thetaStart, thetaLength);
+```
+
+### CylinderGeometry 圆柱
+
+[THREE.CylinderGeometry](https://threejs.org/docs/index.html#api/en/geometries/CylinderGeometry)
+
+<Primitive-cylinder-geometry />
+```js
+const radiusTop = 4;  // ui: radiusTop
+const radiusBottom = 4;  // ui: radiusBottom
+const height = 8;  // ui: height
+const radialSegments = 12;  // ui: radialSegments
+const geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
+```
+
+<Primitive-cylinder-geometry-segments />
+```js
+const radiusTop = 4;  // ui: radiusTop
+const radiusBottom = 4;  // ui: radiusBottom
+const height = 8;  // ui: height
+const radialSegments = 12;  // ui: radialSegments
+const heightSegments = 2;  // ui: heightSegments
+const openEnded = false;  // ui: openEnded
+const thetaStart = Math.PI *0.25;  // ui: thetaStart
+const thetaLength = Math.PI* 1.5;  // ui: thetaLength
+const geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
+```
+
+### DodecahedronGeometry 十二面体
+
+[THREE.DodecahedronGeometry](https://threejs.org/docs/index.html#api/en/geometries/DodecahedronGeometry)
+
+<Primitive-dodecahedron-geometry />
+```js
+const radius = 7;  // ui: radius
+const geometry = new THREE.DodecahedronGeometry(radius);
+```
+
+<Primitive-dodecahedron-geometry-detail />
+```js
+const radius = 7;  // ui: radius
+const detail = 2;  // ui: detail
+const geometry = new THREE.DodecahedronGeometry(radius, detail);
+```
+
+### ExtrudeGeometry 挤出几何体
+
+[THREE.ExtrudeGeometry](https://threejs.org/docs/index.html#api/en/geometries/ExtrudeGeometry)
+
+#### 这里我们挤压了一个心型。注意，这分别是 TextGeometry 和 TextGeometry 的基础
+
+<Primitive-extrude-geometry />
+```js
+const shape = new THREE.Shape();
+const x = -2.5;
+const y = -5;
+shape.moveTo(x + 2.5, y + 2.5);
+shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
+shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
+shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
+shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
+shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
+shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+
+const extrudeSettings = {
+  steps: 2,  // ui: steps
+  depth: 2,  // ui: depth
+  bevelEnabled: true,  // ui: bevelEnabled
+  bevelThickness: 1,  // ui: bevelThickness
+  bevelSize: 1,  // ui: bevelSize
+  bevelSegments: 2,  // ui: bevelSegments
+};
+
+const geometry = THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+```
+
+<Primitive-extrude-geometry-hole />
+
+```js
+const shape = new THREE.Shape([
+  [ -2, -0.1], [  2, -0.1], [ 2,  0.6],
+  [1.6,  0.6], [1.6,  0.1], [-2,  0.1],
+].map(p => new THREE.Vector2(...p)));
+
+const x = -2.5;
+const y = -5;
+const curve = new THREE.CurvePath();
+const points = [
+  [x + 2.5, y + 2.5],
+  [x + 2.5, y + 2.5], [x + 2,   y      ], [x,       y      ],
+  [x - 3,   y      ], [x - 3,   y + 3.5], [x - 3,   y + 3.5],
+  [x - 3,   y + 5.5], [x - 1.5, y + 7.7], [x + 2.5, y + 9.5],
+  [x + 6,   y + 7.7], [x + 8,   y + 4.5], [x + 8,   y + 3.5],
+  [x + 8,   y + 3.5], [x + 8,   y      ], [x + 5,   y      ],
+  [x + 3.5, y      ], [x + 2.5, y + 2.5], [x + 2.5, y + 2.5],
+].map(p => new THREE.Vector3(...p, 0));
+for (let i = 0; i < points.length; i += 3) {
+  curve.add(new THREE.CubicBezierCurve3(...points.slice(i, i + 4)));
+}
+
+const extrudeSettings = {
+  steps: 100,  // ui: steps
+  bevelEnabled: false,
+  extrudePath: curve,
+};
+
+const geometry =  new THREE.ExtrudeGeometry(shape, extrudeSettings);
+```
+
+### IcosahedronGeometry 二十面体
+
+[THREE.ExtrudeGeometry](https://threejs.org/docs/index.html#api/en/geometries/IcosahedronGeometry)
+
+<Primitive-icosahedron-geometry />
+```js
+const radius = 7;  // ui: radius
+const geometry = new THREE.IcosahedronGeometry(radius);
+```
+
+<Primitive-icosahedron-geometry-detail />
+
+```js
+const radius = 7;  // ui: radius
+const detail = 2;  // ui: detail
+const geometry = new THREE.IcosahedronGeometry(radius, detail);
+```
+
+### LatheGeometry 车床几何
+
+[THREE.LatheGeometry](https://threejs.org/docs/index.html#api/en/geometries/LatheGeometry)
+
+#### 绕着一条线旋转形成的形状。例如：灯泡、保龄球瓶、蜡烛、蜡烛台、酒瓶、玻璃杯等。你提供一系列点作为 2D 轮廓，并告诉 Three.js 沿着某条轴旋转时需要将侧面分成多少块
+
+<Primitive-lathe-geometry />
+
+```js
+const points = [];
+for (let i = 0; i < 10; ++i) {
+  points.push(new THREE.Vector2(Math.sin(i * 0.2) * 3 + 3, (i - 5) * .8));
+}
+const geometry = new THREE.LatheGeometry(points);
+```
+
+<Primitive-lathe-geometry-segments />
+
+```js
+const points = [];
+for (let i = 0; i < 10; ++i) {
+  points.push(new THREE.Vector2(Math.sin(i * 0.2) * 3 + 3, (i - 5) * .8));
+}
+const segments = 12;  // ui: segments
+const phiStart = Math.PI * 0.25;  // ui: phiStart
+const phiLength = Math.PI * 1.5;  // ui: phiLength
+const geometry = new THREE.LatheGeometry(
+    points, segments, phiStart, phiLength);
+```
+
+### OctahedronGeometry 八面体
+
+[THREE.OctahedronGeometry](https://threejs.org/docs/index.html#api/en/geometries/OctahedronGeometry)
+
+<Primitive-octahedron-geometry />
+
+```js
+const radius = 7;  // ui: radius
+const geometry = new THREE.OctahedronGeometry(radius);
+```
+
+<Primitive-octahedron-geometry-detail />
+
+```js
+const radius = 7;  // ui: radius
+const detail = 2;  // ui: detail
+const geometry = new THREE.OctahedronGeometry(radius, detail);
+```
 
 ## 场景
 

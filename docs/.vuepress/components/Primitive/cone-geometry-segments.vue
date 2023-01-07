@@ -1,6 +1,6 @@
 <script>
 import Base from '../base/base.vue'
-import { initBoxGeometry } from '../../utils/primitive'
+import { initConeGeometry } from '../../utils/primitive'
 
 export default {
   extends: Base,
@@ -12,16 +12,18 @@ export default {
   },
   methods: {
     init() {
+      this.camera.position.set(0, 0, 20)
       const options = {
-        width: 8,
+        radius: 6,
         height: 8,
-        depth: 8,
-        widthSegments: 1,
-        heightSegments: 1,
-        depthSegments: 1
+        radialSegments: 16,
+        heightSegments :2,
+        openEnded: true,
+        thetaStart: Math.PI * 0.25,
+        thetaLength: Math.PI * 1.5
       }
 
-      this.mesh = initBoxGeometry(options)
+      this.mesh = initConeGeometry(options)
       this.scene.add(this.mesh)
     }
   }
